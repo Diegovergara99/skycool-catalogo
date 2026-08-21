@@ -57,6 +57,12 @@ describe("carritoReducer", () => {
     const estado = carritoReducer([itemBase], { type: "VACIAR" });
     expect(estado).toHaveLength(0);
   });
+
+  it("CARGAR reemplaza el estado completo con los items dados", () => {
+    const itemVenta: ItemCarrito = { ...itemBase, tipo: "venta", precioUnitario: 45000 };
+    const estado = carritoReducer([itemBase], { type: "CARGAR", items: [itemVenta] });
+    expect(estado).toEqual([itemVenta]);
+  });
 });
 
 describe("subtotalCarrito", () => {

@@ -14,7 +14,8 @@ export type AccionCarrito =
   | { type: "AGREGAR"; item: ItemCarrito }
   | { type: "QUITAR"; clave: string }
   | { type: "ACTUALIZAR_CANTIDAD"; clave: string; cantidad: number }
-  | { type: "VACIAR" };
+  | { type: "VACIAR" }
+  | { type: "CARGAR"; items: ItemCarrito[] };
 
 export function claveItem(item: Pick<ItemCarrito, "productoId" | "varianteId" | "tipo">): string {
   return `${item.productoId}__${item.varianteId}__${item.tipo}`;
@@ -43,6 +44,8 @@ export function carritoReducer(state: ItemCarrito[], accion: AccionCarrito): Ite
       );
     case "VACIAR":
       return [];
+    case "CARGAR":
+      return accion.items;
     default:
       return state;
   }
