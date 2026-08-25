@@ -1,4 +1,5 @@
 import type { Producto } from "./types";
+import type { TipoOperacion } from "./carrito-reducer";
 
 // PRECIOS DE MUESTRA — reemplaza precioRenta y precioVenta con tus precios
 // reales antes de publicar el sitio.
@@ -153,3 +154,22 @@ export const productos: Producto[] = [
     ],
   },
 ];
+
+/**
+ * Resuelve el precio oficial de una variante desde el catálogo, ignorando
+ * cualquier precio que llegue del cliente. Úsalo en cualquier punto que
+ * reciba un precio propuesto por el usuario (por ejemplo, la ruta que crea
+ * la preferencia de pago) para evitar que se manipule el monto a cobrar.
+ *
+ * Devuelve `null` si el producto o la variante no existen en el catálogo.
+ */
+export function resolverPrecioOficial(
+  productoId: string,
+  varianteId: string,
+  tipo: TipoOperacion
+): number | null {
+  const producto = productos.find((p) => p.id === productoId);
+  const variante = producto?.variantes.find((v) => v.id === varianteId);
+  if (!variante) return null;
+  return tipo === "renta" ? variante.precioRenta : variante.precioVenta;
+}
