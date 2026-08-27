@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
+import { CarritoProvider } from "@/lib/carrito-context";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const barlow = Barlow_Condensed({
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className={`${inter.variable} ${barlow.variable} font-sans antialiased`}>
-        {children}
+        <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>
   );
