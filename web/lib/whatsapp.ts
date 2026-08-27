@@ -33,6 +33,15 @@ export function construirLinkWhatsapp(numero: string, items: ItemCarrito[]): str
   return construirLinkWaMe(numero, mensaje);
 }
 
+/**
+ * Arma un link de WhatsApp con un mensaje libre (sin depender de items del
+ * carrito), útil para casos como "tuve un problema al pagar" donde no hay
+ * un carrito que cotizar.
+ */
+export function construirLinkWhatsappMensaje(numero: string, mensaje: string): string {
+  return construirLinkWaMe(numero, mensaje);
+}
+
 export function construirLinkContacto(
   numero: string,
   nombre: string,

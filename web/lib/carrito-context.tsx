@@ -23,6 +23,23 @@ interface CarritoContextValor {
   subtotal: number;
   cantidadTotal: number;
   abierto: boolean;
+  /**
+   * `true` una vez que el carrito terminó de leer cualquier estado
+   * persistido de localStorage al montar. Los consumidores que necesiten
+   * confiar en `items`/`cantidadTotal` como autoritativos en el primer
+   * render (por ejemplo, antes de mostrar un mensaje de "carrito vacío",
+   * vaciar el carrito, o disparar un evento de analytics) deben esperar a
+   * que esta bandera sea `true` primero — antes de la hidratación, `items`
+   * siempre es `[]` sin importar lo que realmente esté persistido.
+   *
+   * Motivo: los efectos de un componente hijo se disparan ANTES que los
+   * efectos propios de `CarritoProvider` (React ejecuta los efectos de
+   * montaje de forma bottom-up), así que cualquier consumidor que actúe
+   * sobre el carrito sin esperar esta bandera corre el riesgo de que la
+   * hidratación posterior sobreescriba su acción con los datos guardados
+   * previamente (por ejemplo, vaciar el carrito y luego verlo repoblarse).
+   */
+  hidratado: boolean;
   agregarProducto: (item: ItemCarrito) => void;
   quitarProducto: (clave: string) => void;
   actualizarCantidad: (clave: string, cantidad: number) => void;
@@ -44,6 +61,7 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
     []
   );
   const [abierto, setAbierto] = useState(false);
+  const [hidratado, setHidratado] = useState(false);
   // Evita que el efecto de persistencia escriba "[]" en localStorage antes de
   // que el efecto de hidratación (abajo) haya tenido oportunidad de leer los
   // datos guardados. `dispatch` solo agenda una actualización — no cambia
@@ -76,6 +94,7 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
       // Datos corruptos en localStorage: se ignoran y se mantiene el carrito vacío.
     } finally {
       haHidratado.current = true;
+      setHidratado(true);
     }
     // Solo debe ejecutarse una vez al montar, para hidratar desde localStorage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,6 +122,7 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
     subtotal: subtotalCarrito(items),
     cantidadTotal: items.reduce((acc, i) => acc + i.cantidad, 0),
     abierto,
+    hidratado,
     agregarProducto,
     quitarProducto,
     actualizarCantidad,

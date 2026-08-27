@@ -29,6 +29,13 @@ describe("CarritoProvider / useCarrito", () => {
     expect(result.current.abierto).toBe(false);
   });
 
+  it("hidratado pasa a true después de que el efecto de hidratación corre", async () => {
+    const { result } = renderHook(() => useCarrito(), { wrapper });
+    await waitFor(() => {
+      expect(result.current.hidratado).toBe(true);
+    });
+  });
+
   it("agregarProducto agrega el item y abre el carrito", () => {
     const { result } = renderHook(() => useCarrito(), { wrapper });
     act(() => result.current.agregarProducto(item));

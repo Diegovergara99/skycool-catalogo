@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { construirMensajeWhatsapp, construirLinkWhatsapp, construirLinkContacto } from "./whatsapp";
+import {
+  construirMensajeWhatsapp,
+  construirLinkWhatsapp,
+  construirLinkContacto,
+  construirLinkWhatsappMensaje,
+} from "./whatsapp";
 import type { ItemCarrito } from "./carrito-reducer";
 
 const items: ItemCarrito[] = [
@@ -68,6 +73,17 @@ describe("construirLinkWhatsapp", () => {
     const link = construirLinkWhatsapp("5215555555555", items);
     expect(link).toContain("https://wa.me/5215555555555?text=");
     expect(link).toContain(encodeURIComponent("Extractor de aire"));
+  });
+});
+
+describe("construirLinkWhatsappMensaje", () => {
+  it("arma un link wa.me con un mensaje libre, sin depender de items del carrito", () => {
+    const link = construirLinkWhatsappMensaje(
+      "5215555555555",
+      "Hola, tuve un problema al pagar en el sitio de SkyCool. Quiero coordinar mi pago."
+    );
+    expect(link).toMatch(/^https:\/\/wa\.me\/5215555555555\?text=/);
+    expect(decodeURIComponent(link)).toContain("tuve un problema al pagar");
   });
 });
 
