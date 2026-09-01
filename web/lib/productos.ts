@@ -1,8 +1,9 @@
 import type { Producto } from "./types";
 import type { TipoOperacion } from "./carrito-reducer";
 
-// PRECIOS DE MUESTRA — reemplaza precioRenta y precioVenta con tus precios
-// reales antes de publicar el sitio.
+// precioVenta: precios reales de venta (sin IVA) proporcionados por SkyCool.
+// precioRenta: PRECIO DE MUESTRA — reemplaza con los precios reales de renta
+// cuando los tengas.
 export const productos: Producto[] = [
   {
     id: "extractor-aire",
@@ -21,7 +22,7 @@ export const productos: Producto[] = [
       { label: "Dimensiones", valor: "1220 × 1220 × 400 mm" },
     ],
     variantes: [
-      { id: "ay-1220", nombre: "AY-1220", precioRenta: 1200, precioVenta: 45000 },
+      { id: "ay-1220", nombre: "AY-1220", precioRenta: 1200, precioVenta: 17914 },
     ],
   },
   {
@@ -44,7 +45,7 @@ export const productos: Producto[] = [
         id: "dm-110",
         nombre: "DM-110 (conexión a 110V)",
         precioRenta: 900,
-        precioVenta: 28000,
+        precioVenta: 23520,
         specs: [
           { label: "Alcance de aire", valor: "hasta 30 m" },
           { label: "Alimentación", valor: "110V/50Hz" },
@@ -54,7 +55,7 @@ export const productos: Producto[] = [
         id: "dm-220",
         nombre: "DM-220 (conexión a 220V)",
         precioRenta: 950,
-        precioVenta: 29000,
+        precioVenta: 23520,
         specs: [
           { label: "Alcance de aire", valor: "hasta 40 m" },
           { label: "Alimentación", valor: "220V/50Hz" },
@@ -79,7 +80,7 @@ export const productos: Producto[] = [
       { label: "Dimensión exterior", valor: "1300 × 580 × 1180 mm" },
     ],
     variantes: [
-      { id: "ay-920b", nombre: "AY-920B", precioRenta: 700, precioVenta: 18000 },
+      { id: "ay-920b", nombre: "AY-920B", precioRenta: 700, precioVenta: 16310 },
     ],
   },
   {
@@ -98,7 +99,7 @@ export const productos: Producto[] = [
       { label: "Dimensión exterior", valor: "1175 × 650 × 410 mm" },
     ],
     variantes: [
-      { id: "ay-d18", nombre: "AY-D18", precioRenta: 850, precioVenta: 22000 },
+      { id: "ay-d18", nombre: "AY-D18", precioRenta: 850, precioVenta: 31685 },
     ],
   },
   {
@@ -116,7 +117,7 @@ export const productos: Producto[] = [
         id: "w14",
         nombre: "W14 — 4.2 m de diámetro",
         precioRenta: 1500,
-        precioVenta: 60000,
+        precioVenta: 46298,
         specs: [
           { label: "Velocidad", valor: "10-80 rpm" },
           { label: "Volumen de aire", valor: "9,280 m³/min" },
@@ -129,7 +130,7 @@ export const productos: Producto[] = [
         id: "w20",
         nombre: "W20 — 6.1 m de diámetro",
         precioRenta: 2200,
-        precioVenta: 85000,
+        precioVenta: 53306,
         specs: [
           { label: "Velocidad", valor: "10-60 rpm" },
           { label: "Volumen de aire", valor: "13,800 m³/min" },
@@ -142,7 +143,7 @@ export const productos: Producto[] = [
         id: "w26",
         nombre: "W26 — 8 m de diámetro",
         precioRenta: 3000,
-        precioVenta: 110000,
+        precioVenta: 59670,
         specs: [
           { label: "Velocidad", valor: "10-45 rpm" },
           { label: "Volumen de aire", valor: "17,676 m³/min" },

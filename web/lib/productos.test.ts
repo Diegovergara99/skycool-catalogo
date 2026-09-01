@@ -33,7 +33,7 @@ describe("resolverPrecioOficial", () => {
   });
 
   it("devuelve el precio de venta del catálogo para un producto/variante válidos", () => {
-    expect(resolverPrecioOficial("extractor-aire", "ay-1220", "venta")).toBe(45000);
+    expect(resolverPrecioOficial("extractor-aire", "ay-1220", "venta")).toBe(17914);
   });
 
   it("devuelve null si el productoId no existe", () => {

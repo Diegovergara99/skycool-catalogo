@@ -76,7 +76,7 @@ describe("POST /api/create-preference", () => {
     const itemManipulado = {
       ...itemDePrueba,
       tipo: "venta",
-      precioUnitario: 1, // precio real de catálogo (venta) es 45000
+      precioUnitario: 1, // precio real de catálogo (venta) es 17914
     };
 
     const res = await POST(construirRequest({ items: [itemManipulado] }));
@@ -85,7 +85,7 @@ describe("POST /api/create-preference", () => {
       expect.objectContaining({
         body: expect.objectContaining({
           items: expect.arrayContaining([
-            expect.objectContaining({ unit_price: 45000 }),
+            expect.objectContaining({ unit_price: 17914 }),
           ]),
         }),
       })

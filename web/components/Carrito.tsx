@@ -112,7 +112,7 @@ export default function Carrito() {
 
         <div className="mt-6 border-t border-slate-200 pt-4">
           <p className="text-lg font-bold text-[var(--color-navy)]">
-            Subtotal: {formatMoneda(subtotal)}
+            Subtotal: {formatMoneda(subtotal)} <span className="text-sm font-normal text-slate-400">+ IVA</span>
           </p>
 
           {error && (

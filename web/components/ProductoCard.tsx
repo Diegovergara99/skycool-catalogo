@@ -94,9 +94,12 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
         </ul>
 
         <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="font-heading text-2xl font-bold text-[var(--color-navy)]">
-            {formatMoneda(precio)}
-          </span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-heading text-2xl font-bold text-[var(--color-navy)]">
+              {formatMoneda(precio)}
+            </span>
+            <span className="text-xs text-slate-400">+ IVA</span>
+          </div>
           <button
             type="button"
             onClick={agregar}
