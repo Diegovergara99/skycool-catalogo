@@ -43,7 +43,7 @@ describe("productos", () => {
 
 describe("resolverPrecioOficial", () => {
   it("devuelve el precio de renta del catálogo para un producto/variante válidos", () => {
-    expect(resolverPrecioOficial("ventilador-piso", "dm-110", "renta")).toBe(941);
+    expect(resolverPrecioOficial("ventilador-piso", "dm-110", "renta")).toBe(950);
   });
 
   it("devuelve el precio de venta del catálogo para un producto/variante válidos", () => {

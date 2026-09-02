@@ -1,8 +1,8 @@
 import type { Producto } from "./types";
 import type { TipoOperacion } from "./carrito-reducer";
 
-// precioVenta: precios reales de venta (sin IVA) proporcionados por SkyCool.
-// precioRenta: precio por día = 4% del precio de venta, redondeado al peso.
+// precioVenta y precioRenta: precios reales (sin IVA) proporcionados por
+// SkyCool. precioRenta es el precio por día de renta (1 día).
 // Ausente en productos que SkyCool solo vende (Extractor de aire y
 // Ventilador de techo) — esos no muestran la opción de renta en el sitio.
 export const productos: Producto[] = [
@@ -45,7 +45,7 @@ export const productos: Producto[] = [
       {
         id: "dm-110",
         nombre: "DM-110 (conexión a 110V)",
-        precioRenta: 941,
+        precioRenta: 950,
         precioVenta: 23520,
         specs: [
           { label: "Alcance de aire", valor: "hasta 30 m" },
@@ -55,7 +55,7 @@ export const productos: Producto[] = [
       {
         id: "dm-220",
         nombre: "DM-220 (conexión a 220V)",
-        precioRenta: 941,
+        precioRenta: 950,
         precioVenta: 23520,
         specs: [
           { label: "Alcance de aire", valor: "hasta 40 m" },
@@ -81,7 +81,7 @@ export const productos: Producto[] = [
       { label: "Dimensión exterior", valor: "1300 × 580 × 1180 mm" },
     ],
     variantes: [
-      { id: "ay-920b", nombre: "AY-920B", precioRenta: 652, precioVenta: 16310 },
+      { id: "ay-920b", nombre: "AY-920B", precioRenta: 650, precioVenta: 16310 },
     ],
   },
   {
@@ -100,7 +100,7 @@ export const productos: Producto[] = [
       { label: "Dimensión exterior", valor: "1175 × 650 × 410 mm" },
     ],
     variantes: [
-      { id: "ay-d18", nombre: "AY-D18", precioRenta: 1267, precioVenta: 31685 },
+      { id: "ay-d18", nombre: "AY-D18", precioRenta: 1250, precioVenta: 31685 },
     ],
   },
   {
