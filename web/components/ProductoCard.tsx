@@ -12,11 +12,12 @@ interface ProductoCardProps {
 }
 
 export default function ProductoCard({ producto, onAgregar }: ProductoCardProps) {
+  const tieneRenta = producto.variantes.every((v) => v.precioRenta !== undefined);
   const [varianteId, setVarianteId] = useState(producto.variantes[0].id);
-  const [tipo, setTipo] = useState<TipoOperacion>("renta");
+  const [tipo, setTipo] = useState<TipoOperacion>(tieneRenta ? "renta" : "venta");
 
   const variante = producto.variantes.find((v) => v.id === varianteId) ?? producto.variantes[0];
-  const precio = tipo === "renta" ? variante.precioRenta : variante.precioVenta;
+  const precio = tipo === "renta" ? (variante.precioRenta ?? variante.precioVenta) : variante.precioVenta;
   const specs = [...producto.specs, ...(variante.specs ?? [])];
 
   function agregar() {
@@ -67,23 +68,25 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
           </label>
         )}
 
-        <div className="flex rounded-md border border-slate-300 p-1 text-sm font-medium">
-          {(["renta", "venta"] as const).map((opcion) => (
-            <button
-              key={opcion}
-              type="button"
-              aria-pressed={tipo === opcion}
-              onClick={() => setTipo(opcion)}
-              className={`flex-1 rounded py-1 transition ${
-                tipo === opcion
-                  ? "bg-[var(--color-navy)] text-white"
-                  : "text-slate-500"
-              }`}
-            >
-              {opcion === "renta" ? "Renta / día" : "Venta"}
-            </button>
-          ))}
-        </div>
+        {tieneRenta && (
+          <div className="flex rounded-md border border-slate-300 p-1 text-sm font-medium">
+            {(["renta", "venta"] as const).map((opcion) => (
+              <button
+                key={opcion}
+                type="button"
+                aria-pressed={tipo === opcion}
+                onClick={() => setTipo(opcion)}
+                className={`flex-1 rounded py-1 transition ${
+                  tipo === opcion
+                    ? "bg-[var(--color-navy)] text-white"
+                    : "text-slate-500"
+                }`}
+              >
+                {opcion === "renta" ? "Renta / día" : "Venta"}
+              </button>
+            ))}
+          </div>
+        )}
 
         <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-500">
           {specs.map((s) => (

@@ -8,7 +8,8 @@ export interface EspecTecnica {
 export interface Variante {
   id: string;
   nombre: string;
-  precioRenta: number;
+  // Ausente cuando el producto no se ofrece en renta, solo en venta.
+  precioRenta?: number;
   precioVenta: number;
   specs?: EspecTecnica[];
 }

@@ -16,6 +16,16 @@ const productoDePrueba: Producto = {
   ],
 };
 
+const productoSoloVenta: Producto = {
+  id: "extractor-aire",
+  nombre: "Extractor de aire",
+  categoria: "extraccion",
+  imagen: "/imagenes/extractor-aire.jpg",
+  descripcion: "Descripción de prueba",
+  specs: [{ label: "Diámetro", valor: "1100 mm" }],
+  variantes: [{ id: "ay-1220", nombre: "AY-1220", precioVenta: 17914 }],
+};
+
 describe("ProductoCard", () => {
   it("muestra el precio de renta de la primera variante por defecto", () => {
     render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
@@ -46,6 +56,28 @@ describe("ProductoCard", () => {
 
     expect(botonRenta).toHaveAttribute("aria-pressed", "false");
     expect(botonVenta).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("no muestra el toggle renta/venta en un producto que solo se vende", () => {
+    render(<ProductoCard producto={productoSoloVenta} onAgregar={vi.fn()} />);
+    expect(screen.queryByText("Renta / día")).not.toBeInTheDocument();
+    expect(screen.queryByText("Venta")).not.toBeInTheDocument();
+    expect(screen.getByText("$17,914")).toBeInTheDocument();
+  });
+
+  it("agrega tipo 'venta' al carrito en un producto que solo se vende", () => {
+    const onAgregar = vi.fn();
+    render(<ProductoCard producto={productoSoloVenta} onAgregar={onAgregar} />);
+    fireEvent.click(screen.getByText("Agregar al carrito"));
+    expect(onAgregar).toHaveBeenCalledWith({
+      productoId: "extractor-aire",
+      varianteId: "ay-1220",
+      nombreProducto: "Extractor de aire",
+      nombreVariante: "AY-1220",
+      tipo: "venta",
+      precioUnitario: 17914,
+      cantidad: 1,
+    });
   });
 
   it("llama a onAgregar con el item correcto", () => {

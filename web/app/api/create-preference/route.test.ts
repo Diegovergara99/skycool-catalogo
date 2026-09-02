@@ -19,8 +19,8 @@ const itemDePrueba = {
   varianteId: "ay-1220",
   nombreProducto: "Extractor de aire",
   nombreVariante: "AY-1220",
-  tipo: "renta",
-  precioUnitario: 1200,
+  tipo: "venta",
+  precioUnitario: 17914,
   cantidad: 1,
 };
 
@@ -114,6 +114,17 @@ describe("POST /api/create-preference", () => {
     const itemInvalido = { ...itemDePrueba, cantidad: cantidadInvalida };
 
     const res = await POST(construirRequest({ items: [itemInvalido] }));
+    expect(res.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it("devuelve 400 si se pide renta de un producto que solo se vende", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    const { POST } = await import("./route");
+
+    const itemRentaInvalida = { ...itemDePrueba, tipo: "renta" };
+
+    const res = await POST(construirRequest({ items: [itemRentaInvalida] }));
     expect(res.status).toBe(400);
     expect(mockCreate).not.toHaveBeenCalled();
   });
