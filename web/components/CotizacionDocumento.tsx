@@ -116,11 +116,11 @@ export default function CotizacionDocumento({
                     {item.nombreProducto} — {item.nombreVariante}
                   </td>
                   <td className="p-2 text-right">{formatMonedaConCentavos(item.precioUnitario)}</td>
-                  <td className="p-2 text-right font-semibold text-[var(--color-teal-dark)]">
+                  <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
                     {formatMonedaConCentavos(item.precioUnitario * (1 + TASA_IVA))}
                   </td>
                   <td className="p-2 text-right">{formatMonedaConCentavos(importeSinIva)}</td>
-                  <td className="p-2 text-right font-semibold text-[var(--color-teal-dark)]">
+                  <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
                     {formatMonedaConCentavos(importeSinIva * (1 + TASA_IVA))}
                   </td>
                 </tr>
@@ -140,7 +140,7 @@ export default function CotizacionDocumento({
           </div>
           <div className="flex justify-between font-bold">
             <span>{etiquetaTotal} CON IVA</span>
-            <span className="text-[var(--color-teal-dark)]">
+            <span className="text-[var(--color-navy)]">
               {formatMonedaConCentavos(totales.totalConIva)}
             </span>
           </div>
@@ -151,7 +151,7 @@ export default function CotizacionDocumento({
             <p className="font-heading font-bold">PAQUETE 3 DÍAS · 15% DE DESCUENTO</p>
             <p>
               {formatMonedaConCentavos(paquete3Dias.sinIva)} sin IVA /{" "}
-              <span className="font-bold text-[var(--color-teal-dark)]">
+              <span className="font-bold text-[var(--color-navy)]">
                 {formatMonedaConCentavos(paquete3Dias.conIva)}
               </span>{" "}
               con IVA

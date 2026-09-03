@@ -1,12 +1,11 @@
 "use client";
 
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { construirLinkContacto } from "@/lib/whatsapp";
 import { useEnviarCorreoContacto } from "@/lib/useEnviarCorreoContacto";
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "[TU WHATSAPP]";
 const INSTAGRAM = process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "[TU INSTAGRAM]";
-const FACEBOOK = process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "[TU FACEBOOK]";
 
 export default function Contacto() {
   const [nombre, setNombre] = useState("");
@@ -15,14 +14,6 @@ export default function Contacto() {
   const [mensaje, setMensaje] = useState("");
   const [enviado, setEnviado] = useState(false);
   const { enviando, error, exito, enviarCorreo } = useEnviarCorreoContacto();
-
-  useEffect(() => {
-    if (!exito) return;
-    setNombre("");
-    setCorreo("");
-    setTelefono("");
-    setMensaje("");
-  }, [exito]);
 
   function enviarPorWhatsapp(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -38,8 +29,14 @@ export default function Contacto() {
     setMensaje("");
   }
 
-  function enviarPorCorreo() {
-    enviarCorreo({ nombre, correo, telefono, mensaje });
+  async function enviarPorCorreo() {
+    const enviadoOk = await enviarCorreo({ nombre, correo, telefono, mensaje });
+    if (enviadoOk) {
+      setNombre("");
+      setCorreo("");
+      setTelefono("");
+      setMensaje("");
+    }
   }
 
   return (
@@ -60,12 +57,6 @@ export default function Contacto() {
             Instagram:{" "}
             <a className="font-medium text-[var(--color-navy)] underline" href={INSTAGRAM}>
               {INSTAGRAM}
-            </a>
-          </p>
-          <p>
-            Facebook:{" "}
-            <a className="font-medium text-[var(--color-navy)] underline" href={FACEBOOK}>
-              {FACEBOOK}
             </a>
           </p>
         </div>

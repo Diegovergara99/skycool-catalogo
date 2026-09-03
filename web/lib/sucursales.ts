@@ -49,3 +49,16 @@ export const sucursales: Sucursal[] = [
     direccion: "San Juan Crisóstomo 1312, 37490 Plan de Ayala, Gto.",
   },
 ];
+
+/**
+ * Lista de ciudades con cobertura, unidas en una sola oración en español
+ * ("Guadalajara, Tonalá y Monterrey"). Se genera a partir de `sucursales`
+ * para que nunca se desactualice si se agrega o quita una sucursal — antes
+ * esta lista se escribía a mano en la descripción del sitio y con el tiempo
+ * quedó desactualizada (le faltaban 2 de las 7 ciudades reales).
+ */
+export function listaCiudades(): string {
+  const ciudades = sucursales.map((s) => s.ciudad);
+  if (ciudades.length <= 1) return ciudades.join("");
+  return `${ciudades.slice(0, -1).join(", ")} y ${ciudades[ciudades.length - 1]}`;
+}

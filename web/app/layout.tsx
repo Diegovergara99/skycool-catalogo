@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
+import { listaCiudades } from "@/lib/sucursales";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const barlow = Barlow_Condensed({
@@ -10,16 +11,61 @@ const barlow = Barlow_Condensed({
   variable: "--font-barlow",
 });
 
+const TITULO = "SkyCool — Venta y renta de ventilación para eventos y espacios grandes";
+const DESCRIPCION = `Ventiladores de piso, giratorios, de techo, extractores de aire y enfriadores evaporativos en venta y renta. Cobertura en ${listaCiudades()}.`;
+
 export const metadata: Metadata = {
-  title: "SkyCool — Venta y renta de ventilación para eventos y espacios grandes",
-  description:
-    "Ventiladores de piso, giratorios, de techo, extractores de aire y enfriadores evaporativos en venta y renta. Cobertura en Guadalajara, CDMX, Monterrey, León y Culiacán.",
+  metadataBase: new URL("https://www.skycool.com.mx"),
+  title: TITULO,
+  description: DESCRIPCION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: TITULO,
+    description: DESCRIPCION,
+    url: "/",
+    siteName: "SkyCool",
+    images: ["/imagenes/ventilador-giratorio.jpg"],
+    locale: "es_MX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/imagenes/ventilador-giratorio.jpg"],
+  },
+};
+
+const ORGANIZACION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.skycool.com.mx/#organizacion",
+  name: "SkyCool",
+  url: "https://www.skycool.com.mx",
+  ...(process.env.NEXT_PUBLIC_INSTAGRAM_URL
+    ? { sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL] }
+    : {}),
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      telephone: `+52${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.slice(2) ?? ""}`,
+      contactType: "sales",
+      areaServed: "MX",
+      availableLanguage: ["es"],
+    },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body className={`${inter.variable} ${barlow.variable} font-sans antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZACION_JSON_LD) }}
+        />
         <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>

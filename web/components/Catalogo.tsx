@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import ProductoCard from "./ProductoCard";
 import { productos } from "@/lib/productos";
 import { useCarrito } from "@/lib/carrito-context";
+import { construirProductosJsonLd } from "@/lib/schema";
 import type { Categoria } from "@/lib/types";
+
+const jsonLdProductos = construirProductosJsonLd(productos);
 
 // Mantener sincronizado con el tipo Categoria en lib/types.ts —
 // si se agrega una categoría nueva ahí, agregar también su chip aquí.
@@ -28,6 +31,10 @@ export default function Catalogo() {
 
   return (
     <section id="catalogo" className="mx-auto max-w-6xl px-4 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProductos) }}
+      />
       <h2 className="font-heading text-3xl font-bold text-[var(--color-navy)]">Catálogo</h2>
       <p className="mt-2 text-slate-500">
         Equipo de ventilación en renta y venta para tu evento o negocio.
@@ -40,7 +47,7 @@ export default function Catalogo() {
             type="button"
             aria-pressed={filtro === c.id}
             onClick={() => setFiltro(c.id)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
+            className={`rounded-full border px-4 py-2.5 text-sm font-medium transition ${
               filtro === c.id
                 ? "border-[var(--color-navy)] bg-[var(--color-navy)] text-white"
                 : "border-slate-300 text-slate-600 hover:border-[var(--color-navy)]"

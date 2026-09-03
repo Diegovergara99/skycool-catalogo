@@ -22,8 +22,8 @@ export function useEnviarCorreoContacto() {
     exito: false,
   });
 
-  async function enviarCorreo(datos: DatosContacto) {
-    if (estado.enviando) return;
+  async function enviarCorreo(datos: DatosContacto): Promise<boolean> {
+    if (estado.enviando) return false;
     setEstado({ enviando: true, error: null, exito: false });
     try {
       const respuesta = await fetch("/api/contacto", {
@@ -41,16 +41,18 @@ export function useEnviarCorreoContacto() {
           mensaje = "El servidor de correo respondió de forma inesperada.";
         }
         setEstado({ enviando: false, error: mensaje, exito: false });
-        return;
+        return false;
       }
 
       setEstado({ enviando: false, error: null, exito: true });
+      return true;
     } catch {
       setEstado({
         enviando: false,
         error: "No se pudo conectar con el servidor de correo.",
         exito: false,
       });
+      return false;
     }
   }
 

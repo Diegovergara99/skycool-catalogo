@@ -4,8 +4,11 @@ export default function Sucursales() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": sucursales.map((s) => ({
-      "@type": "LocalBusiness",
+      "@type": ["LocalBusiness", "Store"],
+      "@id": `https://www.skycool.com.mx/#sucursal-${s.id}`,
       name: `SkyCool ${s.ciudad}`,
+      url: "https://www.skycool.com.mx/#sucursales",
+      branchOf: { "@id": "https://www.skycool.com.mx/#organizacion" },
       address: {
         "@type": "PostalAddress",
         streetAddress: s.direccion,

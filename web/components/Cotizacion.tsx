@@ -65,7 +65,7 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
               type="button"
               onClick={onCerrar}
               aria-label="Cerrar cotización"
-              className="text-2xl text-slate-400"
+              className="flex h-10 w-10 items-center justify-center text-2xl text-slate-400"
             >
               ×
             </button>
@@ -116,7 +116,7 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
               type="button"
               onClick={onCerrar}
               aria-label="Cerrar cotización"
-              className="text-2xl text-slate-400"
+              className="flex h-10 w-10 items-center justify-center text-2xl text-slate-400"
             >
               ×
             </button>

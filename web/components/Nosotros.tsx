@@ -1,3 +1,11 @@
+import { sucursales } from "@/lib/sucursales";
+
+const DATOS_CONFIANZA = [
+  { valor: "3 años", etiqueta: "de experiencia" },
+  { valor: `${sucursales.length} sucursales`, etiqueta: "en toda la república" },
+  { valor: "Garantía", etiqueta: "entrega e instalación incluidas en renta, 3 años en venta" },
+];
+
 export default function Nosotros() {
   return (
     <section id="nosotros" className="mx-auto max-w-6xl px-4 py-16">
@@ -11,6 +19,17 @@ export default function Nosotros() {
           talleres y gimnasios. Combina uno o varios de nuestros modelos para crear un sistema
           de ventilación acorde a las necesidades de tu evento o negocio.
         </p>
+      </div>
+
+      <div className="mt-10 grid grid-cols-1 gap-6 border-t border-slate-200 pt-8 sm:grid-cols-3">
+        {DATOS_CONFIANZA.map((dato) => (
+          <div key={dato.etiqueta}>
+            <p className="font-heading text-2xl font-bold text-[var(--color-teal-dark)]">
+              {dato.valor}
+            </p>
+            <p className="text-sm text-slate-500">{dato.etiqueta}</p>
+          </div>
+        ))}
       </div>
     </section>
   );

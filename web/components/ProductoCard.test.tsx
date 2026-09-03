@@ -80,6 +80,19 @@ describe("ProductoCard", () => {
     });
   });
 
+  it("incluye specs y precios de todas las variantes en el HTML, no solo la seleccionada, para que los indexe un buscador", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    // DM-220 no está seleccionado por defecto (DM-110 lo está), pero su
+    // información debe existir en el DOM aunque esté oculta visualmente.
+    expect(screen.getByText(/Precio renta por día: \$950/)).toBeInTheDocument();
+    expect(screen.getByText(/Precio de venta: \$29,000/)).toBeInTheDocument();
+  });
+
+  it("no incluye el bloque oculto de variantes cuando el producto tiene un solo modelo", () => {
+    render(<ProductoCard producto={productoSoloVenta} onAgregar={vi.fn()} />);
+    expect(screen.queryByText(/Precio de venta:/)).not.toBeInTheDocument();
+  });
+
   it("llama a onAgregar con el item correcto", () => {
     const onAgregar = vi.fn();
     render(<ProductoCard producto={productoDePrueba} onAgregar={onAgregar} />);

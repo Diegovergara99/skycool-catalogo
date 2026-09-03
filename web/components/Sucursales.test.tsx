@@ -19,6 +19,17 @@ describe("Sucursales", () => {
     expect(script).not.toBeNull();
     const data = JSON.parse(script!.textContent ?? "{}");
     expect(data["@graph"]).toHaveLength(7);
-    expect(data["@graph"][0]["@type"]).toBe("LocalBusiness");
+    expect(data["@graph"][0]["@type"]).toEqual(["LocalBusiness", "Store"]);
+  });
+
+  it("cada sucursal tiene @id único y referencia a la organización vía branchOf", () => {
+    const { container } = render(<Sucursales />);
+    const script = container.querySelector('script[type="application/ld+json"]');
+    const data = JSON.parse(script!.textContent ?? "{}");
+    const ids = data["@graph"].map((s: { "@id": string }) => s["@id"]);
+    expect(new Set(ids).size).toBe(7);
+    for (const sucursal of data["@graph"]) {
+      expect(sucursal.branchOf).toEqual({ "@id": "https://www.skycool.com.mx/#organizacion" });
+    }
   });
 });

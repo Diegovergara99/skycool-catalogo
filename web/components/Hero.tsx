@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-[var(--color-navy)] text-white">
@@ -21,11 +23,13 @@ export default function Hero() {
           </a>
         </div>
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[var(--color-navy-light)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/imagenes/ventilador-giratorio.jpg"
-            alt=""
-            className="h-full w-full object-cover"
+            alt="Ventilador industrial giratorio SkyCool en uso"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
           />
         </div>
       </div>

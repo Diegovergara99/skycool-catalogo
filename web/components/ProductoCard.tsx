@@ -68,6 +68,35 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
           </label>
         )}
 
+        {producto.variantes.length > 1 && (
+          // Los modelos no seleccionados quedan visualmente ocultos, pero
+          // presentes en el HTML: el buscador solo lee el modelo activo del
+          // <select> si no incluimos esto, y nunca indexaría los specs ni
+          // precios de los demás modelos (ej. W20/W26 del ventilador de
+          // techo, o el DM-220 del de piso).
+          <div className="hidden" aria-hidden="true">
+            {producto.variantes.map((v) => {
+              const specsVariante = [...producto.specs, ...(v.specs ?? [])];
+              return (
+                <div key={v.id}>
+                  <span>
+                    {producto.nombre} {v.nombre}
+                  </span>
+                  {specsVariante.map((s) => (
+                    <span key={s.label}>
+                      {s.label}: {s.valor}
+                    </span>
+                  ))}
+                  {v.precioRenta !== undefined && (
+                    <span>Precio renta por día: {formatMoneda(v.precioRenta)}</span>
+                  )}
+                  <span>Precio de venta: {formatMoneda(v.precioVenta)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {tieneRenta && (
           <div className="flex rounded-md border border-slate-300 p-1 text-sm font-medium">
             {(["renta", "venta"] as const).map((opcion) => (
@@ -76,7 +105,7 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
                 type="button"
                 aria-pressed={tipo === opcion}
                 onClick={() => setTipo(opcion)}
-                className={`flex-1 rounded py-1 transition ${
+                className={`flex-1 rounded py-2 transition ${
                   tipo === opcion
                     ? "bg-[var(--color-navy)] text-white"
                     : "text-slate-500"

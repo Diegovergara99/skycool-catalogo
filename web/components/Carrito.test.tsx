@@ -93,15 +93,15 @@ describe("Carrito", () => {
     expect(screen.getByLabelText("Cerrar carrito")).toHaveFocus();
   });
 
-  it("abre el flujo de cotización al hacer click en Generar cotización", () => {
+  it("abre el flujo de cotización al hacer click en Cotización PDF", () => {
     renderCarritoConProducto();
-    fireEvent.click(screen.getByText("Generar cotización"));
+    fireEvent.click(screen.getByText("Cotización PDF"));
     expect(screen.getByText("Datos para tu cotización")).toBeInTheDocument();
   });
 
   it("no cierra el carrito al presionar Escape mientras la cotización está abierta", () => {
     renderCarritoConProducto();
-    fireEvent.click(screen.getByText("Generar cotización"));
+    fireEvent.click(screen.getByText("Cotización PDF"));
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByText("Datos para tu cotización")).not.toBeInTheDocument();
     expect(screen.getByText("Tu carrito")).toBeInTheDocument();

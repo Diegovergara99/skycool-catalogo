@@ -1,0 +1,66 @@
+import type { Producto } from "./types";
+
+const SITIO = "https://www.skycool.com.mx";
+
+/**
+ * Construye el JSON-LD (Schema.org) del catálogo para que Google entienda
+ * los precios y specs de cada modelo. Un `Product` por variante (no por
+ * línea de producto), con un `Offer` de renta (businessFunction LeaseOut,
+ * precio por día vía UnitPriceSpecification) cuando aplica, y siempre un
+ * `Offer` de venta (businessFunction Sell). Los precios en el sitio se
+ * muestran sin IVA, así que `valueAddedTaxIncluded: false` en ambos casos
+ * para que el schema no implique que ese número ya incluye impuestos.
+ */
+export function construirProductosJsonLd(productos: Producto[]) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": productos.flatMap((producto) =>
+      producto.variantes.map((variante) => {
+        const offers = [];
+
+        if (variante.precioRenta !== undefined) {
+          offers.push({
+            "@type": "Offer",
+            businessFunction: "https://schema.org/LeaseOut",
+            price: variante.precioRenta,
+            priceCurrency: "MXN",
+            priceSpecification: {
+              "@type": "UnitPriceSpecification",
+              price: variante.precioRenta,
+              priceCurrency: "MXN",
+              unitText: "día",
+              valueAddedTaxIncluded: false,
+            },
+            availability: "https://schema.org/InStock",
+            url: `${SITIO}/#catalogo`,
+          });
+        }
+
+        offers.push({
+          "@type": "Offer",
+          businessFunction: "https://schema.org/Sell",
+          price: variante.precioVenta,
+          priceCurrency: "MXN",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            price: variante.precioVenta,
+            priceCurrency: "MXN",
+            valueAddedTaxIncluded: false,
+          },
+          availability: "https://schema.org/InStock",
+          url: `${SITIO}/#catalogo`,
+        });
+
+        return {
+          "@type": "Product",
+          "@id": `${SITIO}/#${producto.id}-${variante.id}`,
+          name: `${producto.nombre} ${variante.nombre}`,
+          description: producto.descripcion,
+          image: `${SITIO}${producto.imagen}`,
+          url: `${SITIO}/#catalogo`,
+          offers,
+        };
+      })
+    ),
+  };
+}

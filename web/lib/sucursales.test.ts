@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sucursales } from "./sucursales";
+import { sucursales, listaCiudades } from "./sucursales";
 
 describe("sucursales", () => {
   it("incluye las 7 sucursales reales de SkyCool", () => {
@@ -22,5 +22,13 @@ describe("sucursales", () => {
   it("incluye Culiacán con su dirección real", () => {
     const culiacan = sucursales.find((s) => s.id === "culiacan");
     expect(culiacan?.direccion).toContain("Blvd. Francisco I. Madero 782");
+  });
+});
+
+describe("listaCiudades", () => {
+  it("une las 7 ciudades reales con comas y una 'y' antes de la última", () => {
+    expect(listaCiudades()).toBe(
+      "Guadalajara, Tonalá, Ciudad de México, Monterrey, Culiacán, León y Santa Rosa"
+    );
   });
 });

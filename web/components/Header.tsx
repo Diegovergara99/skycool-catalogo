@@ -58,7 +58,7 @@ export default function Header() {
             aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuAbierto}
             aria-controls="menu-movil"
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 text-[var(--color-navy)] md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-slate-200 text-[var(--color-navy)] md:hidden"
           >
             {menuAbierto ? (
               <span className="text-xl leading-none">×</span>

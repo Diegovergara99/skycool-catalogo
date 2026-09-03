@@ -51,7 +51,7 @@ export default function Carrito() {
             type="button"
             onClick={cerrarCarrito}
             aria-label="Cerrar carrito"
-            className="text-2xl text-slate-400"
+            className="flex h-10 w-10 items-center justify-center text-2xl text-slate-400"
           >
             ×
           </button>
@@ -80,7 +80,7 @@ export default function Carrito() {
                     <button
                       type="button"
                       onClick={() => actualizarCantidad(clave, item.cantidad - 1)}
-                      className="h-6 w-6 rounded border border-slate-300 text-sm"
+                      className="flex h-11 w-11 items-center justify-center rounded border border-slate-300 text-sm"
                       aria-label={`Disminuir cantidad de ${item.nombreProducto}`}
                     >
                       −
@@ -89,7 +89,7 @@ export default function Carrito() {
                     <button
                       type="button"
                       onClick={() => actualizarCantidad(clave, item.cantidad + 1)}
-                      className="h-6 w-6 rounded border border-slate-300 text-sm"
+                      className="flex h-11 w-11 items-center justify-center rounded border border-slate-300 text-sm"
                       aria-label={`Aumentar cantidad de ${item.nombreProducto}`}
                     >
                       +
@@ -122,6 +122,13 @@ export default function Carrito() {
             <p className="mt-3 rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>
           )}
 
+          {!carritoVacio && (
+            <p className="mt-4 text-xs text-slate-500">
+              ¿Necesitas respuesta rápida? Cotiza por WhatsApp. ¿Cotización formal para tu
+              empresa o pago inmediato? Usa las opciones de abajo.
+            </p>
+          )}
+
           <a
             href={carritoVacio ? undefined : linkWhatsapp}
             onClick={(e) => {
@@ -130,30 +137,32 @@ export default function Carrito() {
             target="_blank"
             rel="noreferrer"
             aria-disabled={carritoVacio}
-            className={`mt-4 block rounded-md py-3 text-center font-semibold text-white ${
+            className={`mt-2 block rounded-md py-4 text-center text-lg font-semibold text-white ${
               carritoVacio ? "pointer-events-none bg-slate-300" : "bg-green-600 hover:bg-green-700"
             }`}
           >
             Cotizar por WhatsApp
           </a>
 
-          <button
-            type="button"
-            disabled={carritoVacio}
-            onClick={() => setCotizacionAbierta(true)}
-            className="mt-3 w-full rounded-md border border-[var(--color-navy)] py-3 font-semibold text-[var(--color-navy)] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
-          >
-            Generar cotización
-          </button>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              disabled={carritoVacio}
+              onClick={() => setCotizacionAbierta(true)}
+              className="rounded-md border border-[var(--color-navy)] py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+            >
+              Cotización PDF
+            </button>
 
-          <button
-            type="button"
-            disabled={carritoVacio || cargando}
-            onClick={() => pagar(items)}
-            className="mt-3 w-full rounded-md bg-[var(--color-teal)] py-3 font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
-          >
-            {cargando ? "Conectando con Mercado Pago…" : "Pagar en línea"}
-          </button>
+            <button
+              type="button"
+              disabled={carritoVacio || cargando}
+              onClick={() => pagar(items)}
+              className="rounded-md bg-[var(--color-teal)] py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+            >
+              {cargando ? "Conectando…" : "Pagar en línea"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
