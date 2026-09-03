@@ -58,7 +58,7 @@ export default function CotizacionDocumento({
             <p className="mt-1">
               Tel / WhatsApp <span className="font-semibold">33 1970 4476</span>
             </p>
-            <p>skycool@gmail.com</p>
+            <p>skycool.gdl@gmail.com</p>
             <p>Vigencia: 15 días naturales</p>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function CotizacionDocumento({
             <p className="font-heading font-bold">SKY COOL</p>
             <p className="text-slate-500">Ventilación y enfriamiento industrial</p>
             <p className="text-slate-500">Tel / WhatsApp 33 1970 4476</p>
-            <p className="text-slate-500">skycool@gmail.com</p>
+            <p className="text-slate-500">skycool.gdl@gmail.com</p>
             <p className="text-slate-500">Guadalajara, Jalisco</p>
           </div>
         </div>

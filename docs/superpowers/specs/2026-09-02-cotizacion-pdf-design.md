@@ -68,14 +68,14 @@ Fuera de alcance (por ahora):
 
 - Marca: "SKY COOL" / "VENTILACIÓN Y ENFRIAMIENTO INDUSTRIAL"
 - Tel / WhatsApp: 33 1970 4476
-- Email: skycool@gmail.com
+- Email: skycool.gdl@gmail.com
 - Vigencia: 15 días naturales
 - Facturación: "Todos los precios están expresados en pesos mexicanos. La
   columna 'sin IVA' aplica para operaciones sin comprobante fiscal. Si
   requiere factura, aplica la columna 'con IVA' (16% adicional). La
   factura se emite a nombre de **SkyCool**."
 - Pie de página: SKY COOL / Ventilación y enfriamiento industrial / Tel /
-  WhatsApp 33 1970 4476 / skycool@gmail.com / Guadalajara, Jalisco
+  WhatsApp 33 1970 4476 / skycool.gdl@gmail.com / Guadalajara, Jalisco
 
 ### Condiciones — Renta
 - Renta: pago anticipado más depósito en garantía.
