@@ -27,3 +27,19 @@ body {
 .font-heading {
   font-family: var(--font-barlow), system-ui, sans-serif;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #cotizacion-imprimible,
+  #cotizacion-imprimible * {
+    visibility: visible;
+  }
+  #cotizacion-imprimible {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

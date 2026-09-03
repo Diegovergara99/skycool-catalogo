@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCarrito } from "@/lib/carrito-context";
 import { useCheckoutMercadoPago } from "@/lib/useCheckoutMercadoPago";
 import { claveItem } from "@/lib/carrito-reducer";
 import { construirLinkWhatsapp } from "@/lib/whatsapp";
 import { formatMoneda } from "@/lib/formatMoneda";
+import Cotizacion from "./Cotizacion";
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "[TU WHATSAPP]";
 
@@ -14,6 +15,7 @@ export default function Carrito() {
     useCarrito();
   const { cargando, error, pagar } = useCheckoutMercadoPago();
   const cerrarBotonRef = useRef<HTMLButtonElement>(null);
+  const [cotizacionAbierta, setCotizacionAbierta] = useState(false);
 
   useEffect(() => {
     if (!abierto) return;
@@ -34,6 +36,7 @@ export default function Carrito() {
   const linkWhatsapp = construirLinkWhatsapp(WHATSAPP_NUMERO, items);
 
   return (
+    <>
     <div
       className="fixed inset-0 z-50 flex justify-end bg-black/40"
       role="dialog"
@@ -136,6 +139,15 @@ export default function Carrito() {
 
           <button
             type="button"
+            disabled={carritoVacio}
+            onClick={() => setCotizacionAbierta(true)}
+            className="mt-3 w-full rounded-md border border-[var(--color-navy)] py-3 font-semibold text-[var(--color-navy)] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+          >
+            Generar cotización
+          </button>
+
+          <button
+            type="button"
             disabled={carritoVacio || cargando}
             onClick={() => pagar(items)}
             className="mt-3 w-full rounded-md bg-[var(--color-teal)] py-3 font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
@@ -145,5 +157,10 @@ export default function Carrito() {
         </div>
       </div>
     </div>
+
+    {cotizacionAbierta && (
+      <Cotizacion items={items} onCerrar={() => setCotizacionAbierta(false)} />
+    )}
+    </>
   );
 }

@@ -92,4 +92,10 @@ describe("Carrito", () => {
     renderCarritoConProducto();
     expect(screen.getByLabelText("Cerrar carrito")).toHaveFocus();
   });
+
+  it("abre el flujo de cotización al hacer click en Generar cotización", () => {
+    renderCarritoConProducto();
+    fireEvent.click(screen.getByText("Generar cotización"));
+    expect(screen.getByText("Datos para tu cotización")).toBeInTheDocument();
+  });
 });
