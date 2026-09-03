@@ -40,7 +40,7 @@ export default function Contacto() {
   }
 
   return (
-    <section id="contacto" className="mx-auto max-w-6xl px-4 py-16">
+    <section id="contacto" className="mx-auto max-w-6xl px-4 pb-24 pt-16 sm:pb-16">
       <h2 className="font-heading text-3xl font-bold text-[var(--color-navy)]">Contacto</h2>
       <div className="mt-6 grid gap-8 md:grid-cols-2">
         <div className="space-y-3 text-slate-600">

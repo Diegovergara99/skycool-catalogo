@@ -92,42 +92,46 @@ export default function CotizacionDocumento({
           <h2 className="font-heading text-xl font-bold">{tituloSeccion}</h2>
         </div>
 
-        <table className="mt-4 w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-[var(--color-navy)] text-left text-xs text-white">
-              <th className="p-2">Cant.</th>
-              <th className="p-2">Descripción</th>
-              <th className="p-2 text-right">{columnaPrecio} S/IVA</th>
-              <th className="p-2 text-right">{columnaPrecio} + IVA</th>
-              <th className="p-2 text-right">{columnaImporte} S/IVA</th>
-              <th className="p-2 text-right">{columnaImporte} + IVA</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => {
-              const importeSinIva = item.precioUnitario * item.cantidad;
-              return (
-                <tr
-                  key={`${item.productoId}__${item.varianteId}__${item.tipo}`}
-                  className="border-b border-slate-100"
-                >
-                  <td className="p-2">{item.cantidad}</td>
-                  <td className="p-2">
-                    {item.nombreProducto} — {item.nombreVariante}
-                  </td>
-                  <td className="p-2 text-right">{formatMonedaConCentavos(item.precioUnitario)}</td>
-                  <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
-                    {formatMonedaConCentavos(item.precioUnitario * (1 + TASA_IVA))}
-                  </td>
-                  <td className="p-2 text-right">{formatMonedaConCentavos(importeSinIva)}</td>
-                  <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
-                    {formatMonedaConCentavos(importeSinIva * (1 + TASA_IVA))}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="mt-4 overflow-x-auto print:overflow-visible">
+          <table className="w-full min-w-[640px] border-collapse text-sm">
+            <thead>
+              <tr className="bg-[var(--color-navy)] text-left text-xs text-white">
+                <th className="p-2">Cant.</th>
+                <th className="p-2">Descripción</th>
+                <th className="p-2 text-right">{columnaPrecio} S/IVA</th>
+                <th className="p-2 text-right">{columnaPrecio} + IVA</th>
+                <th className="p-2 text-right">{columnaImporte} S/IVA</th>
+                <th className="p-2 text-right">{columnaImporte} + IVA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => {
+                const importeSinIva = item.precioUnitario * item.cantidad;
+                return (
+                  <tr
+                    key={`${item.productoId}__${item.varianteId}__${item.tipo}`}
+                    className="border-b border-slate-100"
+                  >
+                    <td className="p-2">{item.cantidad}</td>
+                    <td className="p-2">
+                      {item.nombreProducto} — {item.nombreVariante}
+                    </td>
+                    <td className="p-2 text-right">
+                      {formatMonedaConCentavos(item.precioUnitario)}
+                    </td>
+                    <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
+                      {formatMonedaConCentavos(item.precioUnitario * (1 + TASA_IVA))}
+                    </td>
+                    <td className="p-2 text-right">{formatMonedaConCentavos(importeSinIva)}</td>
+                    <td className="p-2 text-right font-semibold text-[var(--color-navy)]">
+                      {formatMonedaConCentavos(importeSinIva * (1 + TASA_IVA))}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
         <div className="ml-auto mt-4 w-64 space-y-1 text-sm">
           <div className="flex justify-between">
