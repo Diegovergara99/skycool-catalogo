@@ -98,4 +98,12 @@ describe("Carrito", () => {
     fireEvent.click(screen.getByText("Generar cotización"));
     expect(screen.getByText("Datos para tu cotización")).toBeInTheDocument();
   });
+
+  it("no cierra el carrito al presionar Escape mientras la cotización está abierta", () => {
+    renderCarritoConProducto();
+    fireEvent.click(screen.getByText("Generar cotización"));
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByText("Datos para tu cotización")).not.toBeInTheDocument();
+    expect(screen.getByText("Tu carrito")).toBeInTheDocument();
+  });
 });

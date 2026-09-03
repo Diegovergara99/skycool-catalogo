@@ -20,11 +20,11 @@ export default function Carrito() {
   useEffect(() => {
     if (!abierto) return;
     function alPresionarTecla(e: KeyboardEvent) {
-      if (e.key === "Escape") cerrarCarrito();
+      if (e.key === "Escape" && !cotizacionAbierta) cerrarCarrito();
     }
     window.addEventListener("keydown", alPresionarTecla);
     return () => window.removeEventListener("keydown", alPresionarTecla);
-  }, [abierto, cerrarCarrito]);
+  }, [abierto, cerrarCarrito, cotizacionAbierta]);
 
   useEffect(() => {
     if (abierto) cerrarBotonRef.current?.focus();
