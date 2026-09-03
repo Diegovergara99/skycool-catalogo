@@ -23,4 +23,12 @@ describe("AvisoDePrivacidadPage", () => {
     render(<AvisoDePrivacidadPage />);
     expect(screen.getByText(/No usamos tus datos para fines de mercadotecnia/i)).toBeInTheDocument();
   });
+
+  it("menciona el uso de Google Analytics y cómo desactivarlo", () => {
+    render(<AvisoDePrivacidadPage />);
+    expect(screen.getAllByText(/Google Analytics/i).length).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("link", { name: /complemento de inhabilitación de Google Analytics/i })
+    ).toHaveAttribute("href", "https://tools.google.com/dlpage/gaoptout");
+  });
 });

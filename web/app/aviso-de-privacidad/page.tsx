@@ -118,7 +118,28 @@ export default function AvisoDePrivacidadPage() {
 
         <section>
           <h2 className="font-heading text-lg font-bold text-[var(--color-navy)]">
-            6. Cambios a este aviso
+            6. Cookies y tecnologías de rastreo
+          </h2>
+          <p className="mt-2">
+            Usamos Google Analytics para entender, de forma anónima y agregada, cuánta gente
+            visita el sitio y qué páginas les interesan más — esto nos ayuda a mejorar el sitio,
+            no a identificarte a ti individualmente. Google Analytics usa cookies para esto.
+            Puedes bloquear estas cookies desde la configuración de tu navegador, o instalar el{" "}
+            <a
+              href="https://tools.google.com/dlpage/gaoptout"
+              className="underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              complemento de inhabilitación de Google Analytics
+            </a>{" "}
+            si prefieres no ser medido.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-heading text-lg font-bold text-[var(--color-navy)]">
+            7. Cambios a este aviso
           </h2>
           <p className="mt-2">
             Si actualizamos este aviso de privacidad, publicaremos la nueva versión en esta misma

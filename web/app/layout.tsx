@@ -3,6 +3,7 @@ import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
 import { listaCiudades } from "@/lib/sucursales";
+import { construirScriptGtag } from "@/lib/analytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const barlow = Barlow_Condensed({
@@ -58,6 +59,8 @@ const ORGANIZACION_JSON_LD = {
   ],
 };
 
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
@@ -66,6 +69,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZACION_JSON_LD) }}
         />
+        {GA_MEASUREMENT_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{ __html: construirScriptGtag(GA_MEASUREMENT_ID) }}
+            />
+          </>
+        )}
         <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>
