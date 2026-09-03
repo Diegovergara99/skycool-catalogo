@@ -6,6 +6,7 @@ import { useCheckoutMercadoPago } from "@/lib/useCheckoutMercadoPago";
 import { claveItem } from "@/lib/carrito-reducer";
 import { construirLinkWhatsapp } from "@/lib/whatsapp";
 import { formatMoneda } from "@/lib/formatMoneda";
+import { useDialogoAccesible } from "@/lib/useDialogoAccesible";
 import Cotizacion from "./Cotizacion";
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "[TU WHATSAPP]";
@@ -15,7 +16,10 @@ export default function Carrito() {
     useCarrito();
   const { cargando, error, pagar } = useCheckoutMercadoPago();
   const cerrarBotonRef = useRef<HTMLButtonElement>(null);
+  const dialogoRef = useRef<HTMLDivElement>(null);
   const [cotizacionAbierta, setCotizacionAbierta] = useState(false);
+
+  useDialogoAccesible(dialogoRef, abierto && !cotizacionAbierta);
 
   useEffect(() => {
     if (!abierto) return;
@@ -38,6 +42,7 @@ export default function Carrito() {
   return (
     <>
     <div
+      ref={dialogoRef}
       className="fixed inset-0 z-50 flex justify-end bg-black/40"
       role="dialog"
       aria-modal="true"

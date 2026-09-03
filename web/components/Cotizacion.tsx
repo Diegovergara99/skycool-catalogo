@@ -7,6 +7,7 @@ import {
   generarNumeroCotizacion,
   formatearFechaCotizacion,
 } from "@/lib/cotizacion";
+import { useDialogoAccesible } from "@/lib/useDialogoAccesible";
 import CotizacionDocumento from "./CotizacionDocumento";
 
 interface CotizacionProps {
@@ -24,6 +25,9 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
   const [atencion, setAtencion] = useState("");
   const [datosDocumento, setDatosDocumento] = useState<DatosDocumento | null>(null);
   const cerrarBotonRef = useRef<HTMLButtonElement>(null);
+  const dialogoRef = useRef<HTMLDivElement>(null);
+
+  useDialogoAccesible(dialogoRef);
 
   useEffect(() => {
     function alPresionarTecla(e: KeyboardEvent) {
@@ -49,6 +53,7 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
 
   return (
     <div
+      ref={dialogoRef}
       className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 print:static print:bg-transparent print:p-0"
       role="dialog"
       aria-modal="true"
