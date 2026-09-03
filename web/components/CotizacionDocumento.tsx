@@ -1,5 +1,5 @@
 import type { ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
-import { calcularTotales, calcularPaquete3Dias } from "@/lib/cotizacion";
+import { calcularTotales, calcularPaquete3Dias, TASA_IVA } from "@/lib/cotizacion";
 import { formatMonedaConCentavos } from "@/lib/formatMoneda";
 
 interface CotizacionDocumentoProps {
@@ -108,7 +108,7 @@ export default function CotizacionDocumento({
               const importeSinIva = item.precioUnitario * item.cantidad;
               return (
                 <tr
-                  key={`${item.productoId}__${item.varianteId}`}
+                  key={`${item.productoId}__${item.varianteId}__${item.tipo}`}
                   className="border-b border-slate-100"
                 >
                   <td className="p-2">{item.cantidad}</td>
@@ -117,11 +117,11 @@ export default function CotizacionDocumento({
                   </td>
                   <td className="p-2 text-right">{formatMonedaConCentavos(item.precioUnitario)}</td>
                   <td className="p-2 text-right font-semibold text-[var(--color-teal-dark)]">
-                    {formatMonedaConCentavos(item.precioUnitario * 1.16)}
+                    {formatMonedaConCentavos(item.precioUnitario * (1 + TASA_IVA))}
                   </td>
                   <td className="p-2 text-right">{formatMonedaConCentavos(importeSinIva)}</td>
                   <td className="p-2 text-right font-semibold text-[var(--color-teal-dark)]">
-                    {formatMonedaConCentavos(importeSinIva * 1.16)}
+                    {formatMonedaConCentavos(importeSinIva * (1 + TASA_IVA))}
                   </td>
                 </tr>
               );

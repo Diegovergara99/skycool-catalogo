@@ -1,6 +1,6 @@
 import type { ItemCarrito } from "./carrito-reducer";
 
-const TASA_IVA = 0.16;
+export const TASA_IVA = 0.16;
 const DESCUENTO_PAQUETE_3_DIAS = 0.15;
 
 export interface TotalesCotizacion {
