@@ -16,6 +16,9 @@ export default function Footer() {
               {enlace.etiqueta}
             </a>
           ))}
+          <a href="/aviso-de-privacidad" className="hover:text-white">
+            Aviso de privacidad
+          </a>
         </nav>
         <p className="text-xs text-slate-500">
           © {new Date().getFullYear()} SkyCool. Todos los derechos reservados.

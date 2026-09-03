@@ -107,6 +107,13 @@ export default function Contacto() {
               className="mt-1 w-full rounded-md border border-slate-300 p-3 text-sm"
             />
           </label>
+          <p className="text-xs text-slate-400">
+            Al enviar este formulario aceptas nuestro{" "}
+            <a href="/aviso-de-privacidad" className="underline">
+              Aviso de privacidad
+            </a>
+            .
+          </p>
           <button
             type="submit"
             className="w-full rounded-md bg-[var(--color-teal)] py-3 font-semibold text-[var(--color-navy)] hover:bg-[var(--color-teal-dark)]"
