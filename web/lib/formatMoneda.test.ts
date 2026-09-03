@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatMoneda } from "./formatMoneda";
+import { formatMoneda, formatMonedaConCentavos } from "./formatMoneda";
 
 describe("formatMoneda", () => {
   it("formatea enteros como pesos mexicanos sin decimales", () => {
@@ -9,5 +9,13 @@ describe("formatMoneda", () => {
 
   it("formatea cero correctamente", () => {
     expect(formatMoneda(0)).toBe("$0");
+  });
+});
+
+describe("formatMonedaConCentavos", () => {
+  it("formatea con dos decimales, como en los documentos de cotización", () => {
+    expect(formatMonedaConCentavos(941)).toBe("$941.00");
+    expect(formatMonedaConCentavos(1091.56)).toBe("$1,091.56");
+    expect(formatMonedaConCentavos(6461.7)).toBe("$6,461.70");
   });
 });
