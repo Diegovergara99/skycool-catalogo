@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import type { ItemCarrito } from "@/lib/carrito-reducer";
 import {
   separarPorTipo,
@@ -23,6 +23,19 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
   const [cliente, setCliente] = useState("");
   const [atencion, setAtencion] = useState("");
   const [datosDocumento, setDatosDocumento] = useState<DatosDocumento | null>(null);
+  const cerrarBotonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function alPresionarTecla(e: KeyboardEvent) {
+      if (e.key === "Escape") onCerrar();
+    }
+    window.addEventListener("keydown", alPresionarTecla);
+    return () => window.removeEventListener("keydown", alPresionarTecla);
+  }, [onCerrar]);
+
+  useEffect(() => {
+    cerrarBotonRef.current?.focus();
+  }, [datosDocumento]);
 
   function enviarForm(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -35,7 +48,12 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
   const { renta, venta } = separarPorTipo(items);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 print:static print:bg-transparent print:p-0">
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 print:static print:bg-transparent print:p-0"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Cotización"
+    >
       {!datosDocumento ? (
         <div className="w-full max-w-md rounded-lg bg-white p-6 print:hidden">
           <div className="flex items-center justify-between">
@@ -43,9 +61,10 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
               Datos para tu cotización
             </h2>
             <button
+              ref={cerrarBotonRef}
               type="button"
               onClick={onCerrar}
-              aria-label="Cerrar"
+              aria-label="Cerrar cotización"
               className="text-2xl text-slate-400"
             >
               ×
@@ -93,9 +112,10 @@ export default function Cotizacion({ items, onCerrar }: CotizacionProps) {
               Descargar / Imprimir PDF
             </button>
             <button
+              ref={cerrarBotonRef}
               type="button"
               onClick={onCerrar}
-              aria-label="Cerrar"
+              aria-label="Cerrar cotización"
               className="text-2xl text-slate-400"
             >
               ×

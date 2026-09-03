@@ -70,7 +70,14 @@ describe("Cotizacion", () => {
   it("llama a onCerrar al hacer click en cerrar", () => {
     const onCerrar = vi.fn();
     render(<Cotizacion items={[itemRenta]} onCerrar={onCerrar} />);
-    fireEvent.click(screen.getByLabelText("Cerrar"));
+    fireEvent.click(screen.getByLabelText("Cerrar cotización"));
+    expect(onCerrar).toHaveBeenCalledTimes(1);
+  });
+
+  it("llama a onCerrar al presionar Escape", () => {
+    const onCerrar = vi.fn();
+    render(<Cotizacion items={[itemRenta]} onCerrar={onCerrar} />);
+    fireEvent.keyDown(window, { key: "Escape" });
     expect(onCerrar).toHaveBeenCalledTimes(1);
   });
 });
