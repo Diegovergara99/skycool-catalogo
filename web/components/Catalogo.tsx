@@ -50,14 +50,17 @@ export default function Catalogo() {
   );
 
   return (
-    <section id="catalogo" className="relative overflow-hidden py-16">
+    <section
+      id="catalogo"
+      className="relative overflow-hidden bg-gradient-to-br from-[var(--color-navy)] via-[#081420] to-black py-16"
+    >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-[var(--color-teal)] opacity-[0.07] blur-3xl"
+        className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-[var(--color-teal)] opacity-10 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-40 bottom-0 h-96 w-96 rounded-full bg-[var(--color-teal-dark)] opacity-[0.06] blur-3xl"
+        className="pointer-events-none absolute -left-40 bottom-0 h-96 w-96 rounded-full bg-[var(--color-teal-dark)] opacity-10 blur-3xl"
       />
 
       <div className="relative mx-auto max-w-6xl px-4">
@@ -65,11 +68,9 @@ export default function Catalogo() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProductos) }}
         />
-        <SectionEyebrow>Catálogo</SectionEyebrow>
-        <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">
-          Catálogo
-        </h2>
-        <p className="mt-2 text-slate-500">
+        <SectionEyebrow variant="dark">Catálogo</SectionEyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-bold text-white">Catálogo</h2>
+        <p className="mt-2 text-slate-300">
           Equipo de ventilación en renta y venta para tu evento o negocio.
         </p>
 
@@ -82,8 +83,8 @@ export default function Catalogo() {
               onClick={() => setFiltro(c.id)}
               className={`rounded-full border px-4 py-2.5 text-sm font-medium transition ${
                 filtro === c.id
-                  ? "border-[var(--color-navy)] bg-[var(--color-navy)] text-white shadow-[0_8px_20px_-6px_rgba(11,31,51,0.5)]"
-                  : "border-slate-300 text-slate-600 hover:border-[var(--color-navy)]"
+                  ? "border-[var(--color-teal)] bg-[var(--color-teal)] text-[var(--color-navy)] shadow-[0_8px_20px_-6px_rgba(34,211,211,0.5)]"
+                  : "border-white/20 text-slate-300 hover:border-white/40 hover:text-white"
               }`}
             >
               {c.etiqueta}
@@ -98,7 +99,7 @@ export default function Catalogo() {
               {PAGINAS_PRODUCTO[producto.id] && (
                 <a
                   href={PAGINAS_PRODUCTO[producto.id]}
-                  className="mt-2 block text-center text-sm font-medium text-[var(--color-navy)] underline"
+                  className="mt-2 block text-center text-sm font-medium text-[var(--color-teal)] underline"
                 >
                   Ver ficha completa
                 </a>

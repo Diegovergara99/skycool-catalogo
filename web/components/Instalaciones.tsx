@@ -26,13 +26,20 @@ const FOTOS = [
 
 export default function Instalaciones() {
   return (
-    <section className="bg-slate-50 py-16">
-      <div className="mx-auto max-w-6xl px-4">
-        <SectionEyebrow>Casos reales</SectionEyebrow>
-        <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">
-          Instalaciones reales
-        </h2>
-        <p className="mt-2 text-slate-500">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[var(--color-navy)] via-[#081420] to-black py-16">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-[var(--color-teal)] opacity-10 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[var(--color-teal-dark)] opacity-10 blur-3xl"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionEyebrow variant="dark">Casos reales</SectionEyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-bold text-white">Instalaciones reales</h2>
+        <p className="mt-2 text-slate-300">
           Equipo SkyCool trabajando en sitio, no solo en catálogo.
         </p>
 

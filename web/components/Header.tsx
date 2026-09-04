@@ -24,15 +24,15 @@ export default function Header() {
   }, [menuAbierto]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[var(--color-navy)]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <a href="/" className="font-heading text-2xl font-bold tracking-wide text-[var(--color-navy)]">
+        <a href="/" className="font-heading text-2xl font-bold tracking-wide text-white">
           SKY<span className="text-[var(--color-teal)]">COOL</span>
         </a>
 
-        <nav className="hidden gap-6 text-sm font-medium text-slate-600 md:flex">
+        <nav className="hidden gap-6 text-sm font-medium text-slate-300 md:flex">
           {ENLACES.map((enlace) => (
-            <a key={enlace.href} href={enlace.href} className="transition hover:text-[var(--color-navy)]">
+            <a key={enlace.href} href={enlace.href} className="transition hover:text-[var(--color-teal)]">
               {enlace.etiqueta}
             </a>
           ))}
@@ -42,11 +42,11 @@ export default function Header() {
           <button
             type="button"
             onClick={abrirCarrito}
-            className="relative rounded-md bg-[var(--color-navy)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-navy-light)]"
+            className="relative rounded-md bg-[var(--color-teal)] px-4 py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)]"
           >
             Carrito
             {cantidadTotal > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-teal)] text-xs font-bold text-[var(--color-navy)]">
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-bold text-[var(--color-navy)]">
                 {cantidadTotal}
               </span>
             )}
@@ -58,15 +58,15 @@ export default function Header() {
             aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuAbierto}
             aria-controls="menu-movil"
-            className="flex h-11 w-11 items-center justify-center rounded-md border border-slate-200 text-[var(--color-navy)] md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-white md:hidden"
           >
             {menuAbierto ? (
               <span className="text-xl leading-none">×</span>
             ) : (
               <span className="flex flex-col gap-1">
-                <span className="block h-0.5 w-5 bg-[var(--color-navy)]" />
-                <span className="block h-0.5 w-5 bg-[var(--color-navy)]" />
-                <span className="block h-0.5 w-5 bg-[var(--color-navy)]" />
+                <span className="block h-0.5 w-5 bg-white" />
+                <span className="block h-0.5 w-5 bg-white" />
+                <span className="block h-0.5 w-5 bg-white" />
               </span>
             )}
           </button>
@@ -77,14 +77,14 @@ export default function Header() {
         <nav
           id="menu-movil"
           aria-label="Menú móvil"
-          className="flex flex-col gap-1 border-t border-slate-100 bg-white px-4 py-3 font-heading text-base font-medium text-[var(--color-navy)] md:hidden"
+          className="flex flex-col gap-1 border-t border-white/10 bg-[var(--color-navy)] px-4 py-3 font-heading text-base font-medium text-white md:hidden"
         >
           {ENLACES.map((enlace) => (
             <a
               key={enlace.href}
               href={enlace.href}
               onClick={() => setMenuAbierto(false)}
-              className="rounded-md px-2 py-2 transition hover:bg-slate-50 hover:text-[var(--color-teal-dark)]"
+              className="rounded-md px-2 py-2 transition hover:bg-white/5 hover:text-[var(--color-teal)]"
             >
               {enlace.etiqueta}
             </a>

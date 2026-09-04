@@ -21,17 +21,27 @@ export default function Sucursales() {
   };
 
   return (
-    <section id="sucursales" className="bg-slate-50 py-16">
+    <section
+      id="sucursales"
+      className="relative overflow-hidden bg-gradient-to-br from-[var(--color-navy)] via-[#081420] to-black py-16"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-6xl px-4">
-        <SectionEyebrow>Ubicaciones</SectionEyebrow>
-        <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">
-          Puntos de venta
-        </h2>
-        <p className="mt-2 text-slate-500">Visítanos en cualquiera de nuestras sucursales.</p>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-teal)] opacity-10 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-[var(--color-teal-dark)] opacity-10 blur-3xl"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionEyebrow variant="dark">Ubicaciones</SectionEyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-bold text-white">Puntos de venta</h2>
+        <p className="mt-2 text-slate-300">Visítanos en cualquiera de nuestras sucursales.</p>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {sucursales.map((s) => (

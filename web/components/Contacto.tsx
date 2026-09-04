@@ -41,10 +41,23 @@ export default function Contacto() {
   }
 
   return (
-    <section id="contacto" className="mx-auto max-w-6xl px-4 pb-24 pt-16 sm:pb-16">
-      <SectionEyebrow>Contacto</SectionEyebrow>
-      <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">Contacto</h2>
-      <div className="mt-6 grid gap-8 md:grid-cols-2">
+    <section
+      id="contacto"
+      className="relative overflow-hidden bg-gradient-to-br from-[var(--color-navy)] via-[#081420] to-black pb-24 pt-16 sm:pb-16"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-teal)] opacity-10 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-[var(--color-teal-dark)] opacity-10 blur-3xl"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionEyebrow variant="dark">Contacto</SectionEyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-bold text-white">Contacto</h2>
+        <div className="mt-6 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <a
             href={`https://wa.me/${WHATSAPP_NUMERO}`}
@@ -159,6 +172,7 @@ export default function Contacto() {
             </p>
           )}
         </form>
+        </div>
       </div>
     </section>
   );
