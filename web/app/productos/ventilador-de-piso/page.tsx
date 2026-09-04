@@ -6,11 +6,31 @@ import ProductoCardStandalone from "@/components/ProductoCardStandalone";
 
 const producto = productos.find((p) => p.id === "ventilador-piso")!;
 const URL_PAGINA = "https://www.skycool.com.mx/productos/ventilador-de-piso";
+const TITULO = "Ventilador de piso industrial — renta o venta | SkyCool";
+const DESCRIPCION =
+  "Ventilador de piso industrial DM: renta por evento (con entrega e instalación) o compra para uso permanente, con garantía de 3 años. Diámetro 1.25 m, cobertura 400-500 m².";
 
 export const metadata: Metadata = {
-  title: "Ventilador de piso industrial — renta o venta | SkyCool",
-  description:
-    "Ventilador de piso industrial DM: renta por evento (con entrega e instalación) o compra para uso permanente, con garantía de 3 años. Diámetro 1.25 m, cobertura 400-500 m².",
+  title: TITULO,
+  description: DESCRIPCION,
+  alternates: {
+    canonical: URL_PAGINA,
+  },
+  openGraph: {
+    title: TITULO,
+    description: DESCRIPCION,
+    url: URL_PAGINA,
+    siteName: "SkyCool",
+    images: ["/imagenes/ventilador-piso.jpg"],
+    locale: "es_MX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/imagenes/ventilador-piso.jpg"],
+  },
 };
 
 const jsonLd = construirProductosJsonLd([producto], URL_PAGINA);

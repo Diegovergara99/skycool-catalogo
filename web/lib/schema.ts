@@ -67,3 +67,26 @@ export function construirProductosJsonLd(
     ),
   };
 }
+
+/**
+ * Igual que `construirProductosJsonLd`, pero para el catálogo de la
+ * portada: algunos productos tienen página propia y otros no. Un producto
+ * con página propia debe usar el MISMO `@id` en la portada y en su página
+ * (es la misma entidad), pero el `url` debe apuntar a su página dedicada
+ * en ambos lugares — si la portada dijera `/#catalogo` mientras la página
+ * dedicada dice su propia URL, Google vería dos `url` distintos para el
+ * mismo `@id`, una señal contradictoria sobre cuál es la página real de
+ * ese producto.
+ */
+export function construirCatalogoJsonLd(
+  productos: Producto[],
+  urlPorProducto: Record<string, string> = {}
+) {
+  const graficos = productos.map((producto) =>
+    construirProductosJsonLd([producto], urlPorProducto[producto.id])
+  );
+  return {
+    "@context": "https://schema.org",
+    "@graph": graficos.flatMap((g) => g["@graph"]),
+  };
+}

@@ -4,17 +4,27 @@ import { useMemo, useState } from "react";
 import ProductoCard from "./ProductoCard";
 import { productos } from "@/lib/productos";
 import { useCarrito } from "@/lib/carrito-context";
-import { construirProductosJsonLd } from "@/lib/schema";
+import { construirCatalogoJsonLd } from "@/lib/schema";
 import type { Categoria } from "@/lib/types";
-
-const jsonLdProductos = construirProductosJsonLd(productos);
 
 // Solo estos dos productos tienen página propia (con contenido real y
 // dedicado, no una plantilla genérica) — el resto se queda en el catálogo.
+// El link de "Ver ficha completa" usa la ruta relativa; el JSON-LD necesita
+// la URL absoluta, porque el mismo producto usa el mismo @id en la portada
+// y en su página propia — si aquí dijera /#catalogo mientras la página
+// dedicada dice su propia URL, Google vería dos `url` distintos para el
+// mismo `@id`.
 const PAGINAS_PRODUCTO: Partial<Record<string, string>> = {
   "ventilador-piso": "/productos/ventilador-de-piso",
   "ventilador-techo": "/productos/ventilador-de-techo-industrial",
 };
+
+const SITIO = "https://www.skycool.com.mx";
+const urlsAbsolutasPorProducto = Object.fromEntries(
+  Object.entries(PAGINAS_PRODUCTO).map(([id, ruta]) => [id, `${SITIO}${ruta}`])
+);
+
+const jsonLdProductos = construirCatalogoJsonLd(productos, urlsAbsolutasPorProducto);
 
 // Mantener sincronizado con el tipo Categoria en lib/types.ts —
 // si se agrega una categoría nueva ahí, agregar también su chip aquí.

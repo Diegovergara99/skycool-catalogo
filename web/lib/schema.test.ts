@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { construirProductosJsonLd } from "./schema";
+import { construirProductosJsonLd, construirCatalogoJsonLd } from "./schema";
 import type { Producto } from "./types";
 
 const productoRentaYVenta: Producto = {
@@ -84,5 +84,35 @@ describe("construirProductosJsonLd", () => {
     const producto = jsonLd["@graph"][0];
     expect(producto.url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
     expect(producto.offers[0].url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
+  });
+});
+
+describe("construirCatalogoJsonLd", () => {
+  it("usa /#catalogo para productos sin página propia", () => {
+    const jsonLd = construirCatalogoJsonLd([productoSoloVenta], {});
+    expect(jsonLd["@graph"][0].url).toBe("https://www.skycool.com.mx/#catalogo");
+  });
+
+  it("usa la url de la página propia para un producto que sí la tiene, con el mismo @id que tendría en /#catalogo", () => {
+    const conPaginaPropia = construirCatalogoJsonLd([productoRentaYVenta], {
+      "ventilador-piso": "https://www.skycool.com.mx/productos/ventilador-de-piso",
+    });
+    const sinPaginaPropia = construirProductosJsonLd([productoRentaYVenta]);
+
+    expect(conPaginaPropia["@graph"][0].url).toBe(
+      "https://www.skycool.com.mx/productos/ventilador-de-piso"
+    );
+    // Mismo @id que si no tuviera página propia — es la misma entidad,
+    // solo cambia a dónde apunta su url.
+    expect(conPaginaPropia["@graph"][0]["@id"]).toBe(sinPaginaPropia["@graph"][0]["@id"]);
+  });
+
+  it("mezcla productos con y sin página propia en un solo @graph", () => {
+    const jsonLd = construirCatalogoJsonLd([productoRentaYVenta, productoSoloVenta], {
+      "ventilador-piso": "https://www.skycool.com.mx/productos/ventilador-de-piso",
+    });
+    expect(jsonLd["@graph"]).toHaveLength(3);
+    expect(jsonLd["@graph"][0].url).toBe("https://www.skycool.com.mx/productos/ventilador-de-piso");
+    expect(jsonLd["@graph"][2].url).toBe("https://www.skycool.com.mx/#catalogo");
   });
 });

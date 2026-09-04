@@ -1,8 +1,8 @@
 const ENLACES = [
-  { href: "#catalogo", etiqueta: "Catálogo" },
-  { href: "#nosotros", etiqueta: "Nosotros" },
-  { href: "#sucursales", etiqueta: "Sucursales" },
-  { href: "#contacto", etiqueta: "Contacto" },
+  { href: "/#catalogo", etiqueta: "Catálogo" },
+  { href: "/#nosotros", etiqueta: "Nosotros" },
+  { href: "/#sucursales", etiqueta: "Sucursales" },
+  { href: "/#contacto", etiqueta: "Contacto" },
 ];
 
 export default function Footer() {

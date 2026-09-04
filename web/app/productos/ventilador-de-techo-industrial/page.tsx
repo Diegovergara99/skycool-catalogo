@@ -5,11 +5,31 @@ import ProductoCardStandalone from "@/components/ProductoCardStandalone";
 
 const producto = productos.find((p) => p.id === "ventilador-techo")!;
 const URL_PAGINA = "https://www.skycool.com.mx/productos/ventilador-de-techo-industrial";
+const TITULO = "Ventilador de techo industrial (serie W.FANS) — venta | SkyCool";
+const DESCRIPCION =
+  "Ventilador de techo industrial para naves y bodegas grandes. Tres tamaños: W14, W20 y W26. Motor PMSM de bajo consumo, ruido ≤38 dB, garantía de 3 años.";
 
 export const metadata: Metadata = {
-  title: "Ventilador de techo industrial (serie W.FANS) — venta | SkyCool",
-  description:
-    "Ventilador de techo industrial para naves y bodegas grandes. Tres tamaños: W14, W20 y W26. Motor PMSM de bajo consumo, ruido ≤38 dB, garantía de 3 años.",
+  title: TITULO,
+  description: DESCRIPCION,
+  alternates: {
+    canonical: URL_PAGINA,
+  },
+  openGraph: {
+    title: TITULO,
+    description: DESCRIPCION,
+    url: URL_PAGINA,
+    siteName: "SkyCool",
+    images: ["/imagenes/ventilador-techo.jpg"],
+    locale: "es_MX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/imagenes/ventilador-techo.jpg"],
+  },
 };
 
 const jsonLd = construirProductosJsonLd([producto], URL_PAGINA);

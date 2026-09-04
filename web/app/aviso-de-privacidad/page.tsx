@@ -1,10 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const URL_PAGINA = "https://www.skycool.com.mx/aviso-de-privacidad";
+const TITULO = "Aviso de Privacidad — SkyCool";
+const DESCRIPCION =
+  "Aviso de privacidad de SkyCool: qué datos personales recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.";
+
 export const metadata: Metadata = {
-  title: "Aviso de Privacidad — SkyCool",
-  description:
-    "Aviso de privacidad de SkyCool: qué datos personales recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.",
+  title: TITULO,
+  description: DESCRIPCION,
+  alternates: {
+    canonical: URL_PAGINA,
+  },
+  openGraph: {
+    title: TITULO,
+    description: DESCRIPCION,
+    url: URL_PAGINA,
+    siteName: "SkyCool",
+    locale: "es_MX",
+    type: "website",
+  },
 };
 
 export default function AvisoDePrivacidadPage() {
