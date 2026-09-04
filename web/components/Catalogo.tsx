@@ -5,6 +5,7 @@ import ProductoCard from "./ProductoCard";
 import { productos } from "@/lib/productos";
 import { useCarrito } from "@/lib/carrito-context";
 import { construirCatalogoJsonLd } from "@/lib/schema";
+import SectionEyebrow from "./SectionEyebrow";
 import type { Categoria } from "@/lib/types";
 
 // Cada producto tiene página propia (con contenido real y dedicado, no
@@ -54,7 +55,8 @@ export default function Catalogo() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProductos) }}
       />
-      <h2 className="font-heading text-3xl font-bold text-[var(--color-navy)]">Catálogo</h2>
+      <SectionEyebrow>Catálogo</SectionEyebrow>
+      <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">Catálogo</h2>
       <p className="mt-2 text-slate-500">
         Equipo de ventilación en renta y venta para tu evento o negocio.
       </p>

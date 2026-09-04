@@ -24,9 +24,9 @@ describe("Contacto", () => {
 
   it("muestra el WhatsApp e Instagram (o sus placeholders)", () => {
     render(<Contacto />);
-    expect(screen.getByText(/whatsapp:/i)).toBeInTheDocument();
-    expect(screen.getByText(/instagram:/i)).toBeInTheDocument();
-    expect(screen.queryByText(/facebook:/i)).not.toBeInTheDocument();
+    expect(screen.getByText("WhatsApp")).toBeInTheDocument();
+    expect(screen.getByText("Instagram")).toBeInTheDocument();
+    expect(screen.queryByText(/facebook/i)).not.toBeInTheDocument();
   });
 
   it("abre WhatsApp con los datos del formulario al enviarlo", () => {

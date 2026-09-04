@@ -33,14 +33,14 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
   }
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
-      <div className="relative aspect-[4/3] w-full bg-slate-50">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50">
         <Image
           src={producto.imagen}
           alt={producto.nombre}
           fill
           sizes="(max-width: 768px) 100vw, 400px"
-          className="object-contain p-4"
+          className="object-contain p-4 transition duration-300 group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">

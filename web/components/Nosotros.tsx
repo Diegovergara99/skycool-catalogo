@@ -1,4 +1,5 @@
 import { sucursales } from "@/lib/sucursales";
+import SectionEyebrow from "./SectionEyebrow";
 
 const DATOS_CONFIANZA = [
   { valor: "3 años", etiqueta: "de experiencia" },
@@ -11,7 +12,10 @@ export default function Nosotros() {
     <section id="nosotros" className="mx-auto max-w-6xl px-4 py-16">
       <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-1">
-          <h2 className="font-heading text-3xl font-bold text-[var(--color-navy)]">¿Quiénes somos?</h2>
+          <SectionEyebrow>Sobre nosotros</SectionEyebrow>
+          <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">
+            ¿Quiénes somos?
+          </h2>
         </div>
         <div className="space-y-4 text-slate-600 md:col-span-2">
           <p>
