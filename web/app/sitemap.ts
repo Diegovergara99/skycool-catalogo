@@ -11,6 +11,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${SITIO}/productos/ventilador-de-piso`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITIO}/productos/ventilador-de-techo-industrial`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${SITIO}/aviso-de-privacidad`,
       lastModified: new Date(),
       changeFrequency: "yearly",

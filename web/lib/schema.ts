@@ -11,7 +11,10 @@ const SITIO = "https://www.skycool.com.mx";
  * muestran sin IVA, así que `valueAddedTaxIncluded: false` en ambos casos
  * para que el schema no implique que ese número ya incluye impuestos.
  */
-export function construirProductosJsonLd(productos: Producto[]) {
+export function construirProductosJsonLd(
+  productos: Producto[],
+  urlPagina: string = `${SITIO}/#catalogo`
+) {
   return {
     "@context": "https://schema.org",
     "@graph": productos.flatMap((producto) =>
@@ -32,7 +35,7 @@ export function construirProductosJsonLd(productos: Producto[]) {
               valueAddedTaxIncluded: false,
             },
             availability: "https://schema.org/InStock",
-            url: `${SITIO}/#catalogo`,
+            url: urlPagina,
           });
         }
 
@@ -48,7 +51,7 @@ export function construirProductosJsonLd(productos: Producto[]) {
             valueAddedTaxIncluded: false,
           },
           availability: "https://schema.org/InStock",
-          url: `${SITIO}/#catalogo`,
+          url: urlPagina,
         });
 
         return {
@@ -57,7 +60,7 @@ export function construirProductosJsonLd(productos: Producto[]) {
           name: `${producto.nombre} ${variante.nombre}`,
           description: producto.descripcion,
           image: `${SITIO}${producto.imagen}`,
-          url: `${SITIO}/#catalogo`,
+          url: urlPagina,
           offers,
         };
       })

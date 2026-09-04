@@ -68,4 +68,21 @@ describe("construirProductosJsonLd", () => {
     const ids = jsonLd["@graph"].map((p) => p["@id"]);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("usa /#catalogo como url por defecto si no se especifica una página", () => {
+    const jsonLd = construirProductosJsonLd([productoSoloVenta]);
+    const producto = jsonLd["@graph"][0];
+    expect(producto.url).toBe("https://www.skycool.com.mx/#catalogo");
+    expect(producto.offers[0].url).toBe("https://www.skycool.com.mx/#catalogo");
+  });
+
+  it("usa la url de página dada cuando se especifica (para páginas de producto dedicadas)", () => {
+    const jsonLd = construirProductosJsonLd(
+      [productoSoloVenta],
+      "https://www.skycool.com.mx/productos/extractor-de-aire"
+    );
+    const producto = jsonLd["@graph"][0];
+    expect(producto.url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
+    expect(producto.offers[0].url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
+  });
 });

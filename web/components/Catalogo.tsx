@@ -9,6 +9,13 @@ import type { Categoria } from "@/lib/types";
 
 const jsonLdProductos = construirProductosJsonLd(productos);
 
+// Solo estos dos productos tienen página propia (con contenido real y
+// dedicado, no una plantilla genérica) — el resto se queda en el catálogo.
+const PAGINAS_PRODUCTO: Partial<Record<string, string>> = {
+  "ventilador-piso": "/productos/ventilador-de-piso",
+  "ventilador-techo": "/productos/ventilador-de-techo-industrial",
+};
+
 // Mantener sincronizado con el tipo Categoria en lib/types.ts —
 // si se agrega una categoría nueva ahí, agregar también su chip aquí.
 const CATEGORIAS: { id: Categoria | "todos"; etiqueta: string }[] = [
@@ -60,7 +67,17 @@ export default function Catalogo() {
 
       <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {productosFiltrados.map((producto) => (
-          <ProductoCard key={producto.id} producto={producto} onAgregar={agregarProducto} />
+          <div key={producto.id}>
+            <ProductoCard producto={producto} onAgregar={agregarProducto} />
+            {PAGINAS_PRODUCTO[producto.id] && (
+              <a
+                href={PAGINAS_PRODUCTO[producto.id]}
+                className="mt-2 block text-center text-sm font-medium text-[var(--color-navy)] underline"
+              >
+                Ver ficha completa
+              </a>
+            )}
+          </div>
         ))}
       </div>
     </section>
