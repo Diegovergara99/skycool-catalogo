@@ -50,49 +50,62 @@ export default function Catalogo() {
   );
 
   return (
-    <section id="catalogo" className="mx-auto max-w-6xl px-4 py-16">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProductos) }}
+    <section id="catalogo" className="relative overflow-hidden py-16">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-[var(--color-teal)] opacity-[0.07] blur-3xl"
       />
-      <SectionEyebrow>Catálogo</SectionEyebrow>
-      <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">Catálogo</h2>
-      <p className="mt-2 text-slate-500">
-        Equipo de ventilación en renta y venta para tu evento o negocio.
-      </p>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-40 bottom-0 h-96 w-96 rounded-full bg-[var(--color-teal-dark)] opacity-[0.06] blur-3xl"
+      />
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {CATEGORIAS.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            aria-pressed={filtro === c.id}
-            onClick={() => setFiltro(c.id)}
-            className={`rounded-full border px-4 py-2.5 text-sm font-medium transition ${
-              filtro === c.id
-                ? "border-[var(--color-navy)] bg-[var(--color-navy)] text-white"
-                : "border-slate-300 text-slate-600 hover:border-[var(--color-navy)]"
-            }`}
-          >
-            {c.etiqueta}
-          </button>
-        ))}
-      </div>
+      <div className="relative mx-auto max-w-6xl px-4">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProductos) }}
+        />
+        <SectionEyebrow>Catálogo</SectionEyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--color-navy)]">
+          Catálogo
+        </h2>
+        <p className="mt-2 text-slate-500">
+          Equipo de ventilación en renta y venta para tu evento o negocio.
+        </p>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {productosFiltrados.map((producto) => (
-          <div key={producto.id}>
-            <ProductoCard producto={producto} onAgregar={agregarProducto} />
-            {PAGINAS_PRODUCTO[producto.id] && (
-              <a
-                href={PAGINAS_PRODUCTO[producto.id]}
-                className="mt-2 block text-center text-sm font-medium text-[var(--color-navy)] underline"
-              >
-                Ver ficha completa
-              </a>
-            )}
-          </div>
-        ))}
+        <div className="mt-6 flex flex-wrap gap-2">
+          {CATEGORIAS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              aria-pressed={filtro === c.id}
+              onClick={() => setFiltro(c.id)}
+              className={`rounded-full border px-4 py-2.5 text-sm font-medium transition ${
+                filtro === c.id
+                  ? "border-[var(--color-navy)] bg-[var(--color-navy)] text-white shadow-[0_8px_20px_-6px_rgba(11,31,51,0.5)]"
+                  : "border-slate-300 text-slate-600 hover:border-[var(--color-navy)]"
+              }`}
+            >
+              {c.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {productosFiltrados.map((producto) => (
+            <div key={producto.id}>
+              <ProductoCard producto={producto} onAgregar={agregarProducto} />
+              {PAGINAS_PRODUCTO[producto.id] && (
+                <a
+                  href={PAGINAS_PRODUCTO[producto.id]}
+                  className="mt-2 block text-center text-sm font-medium text-[var(--color-navy)] underline"
+                >
+                  Ver ficha completa
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
