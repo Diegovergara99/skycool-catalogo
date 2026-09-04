@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useCarrito } from "@/lib/carrito-context";
 
 const ENLACES = [
-  { href: "#catalogo", etiqueta: "Catálogo" },
-  { href: "#nosotros", etiqueta: "Nosotros" },
-  { href: "#sucursales", etiqueta: "Sucursales" },
-  { href: "#contacto", etiqueta: "Contacto" },
+  { href: "/#catalogo", etiqueta: "Catálogo" },
+  { href: "/#nosotros", etiqueta: "Nosotros" },
+  { href: "/#sucursales", etiqueta: "Sucursales" },
+  { href: "/#contacto", etiqueta: "Contacto" },
 ];
 
 export default function Header() {
@@ -26,7 +26,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <a href="#" className="font-heading text-2xl font-bold tracking-wide text-[var(--color-navy)]">
+        <a href="/" className="font-heading text-2xl font-bold tracking-wide text-[var(--color-navy)]">
           SKY<span className="text-[var(--color-teal)]">COOL</span>
         </a>
 

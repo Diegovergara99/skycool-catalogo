@@ -4,6 +4,10 @@ import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
 import { listaCiudades } from "@/lib/sucursales";
 import { construirScriptGtag } from "@/lib/analytics";
+import Header from "@/components/Header";
+import Carrito from "@/components/Carrito";
+import Footer from "@/components/Footer";
+import BotonWhatsapp from "@/components/BotonWhatsapp";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const barlow = Barlow_Condensed({
@@ -80,7 +84,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
           </>
         )}
-        <CarritoProvider>{children}</CarritoProvider>
+        <CarritoProvider>
+          <Header />
+          <Carrito />
+          {children}
+          <Footer />
+          <BotonWhatsapp />
+        </CarritoProvider>
       </body>
     </html>
   );
