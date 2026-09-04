@@ -68,12 +68,15 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
           </label>
         )}
 
-        {producto.variantes.length > 1 && (
+        {(producto.variantes.length > 1 || tieneRenta) && (
           // Los modelos no seleccionados quedan visualmente ocultos, pero
           // presentes en el HTML: el buscador solo lee el modelo activo del
           // <select> si no incluimos esto, y nunca indexaría los specs ni
           // precios de los demás modelos (ej. W20/W26 del ventilador de
-          // techo, o el DM-220 del de piso).
+          // techo, o el DM-220 del de piso). También cubre el caso de un
+          // solo modelo con renta Y venta (ej. ventilador giratorio): sin
+          // esto, el precio del modo no seleccionado por defecto (venta)
+          // tampoco aparecería en el HTML.
           <div className="hidden" aria-hidden="true">
             {producto.variantes.map((v) => {
               const specsVariante = [...producto.specs, ...(v.specs ?? [])];

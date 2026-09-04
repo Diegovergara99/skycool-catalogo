@@ -10,6 +10,9 @@ describe("sitemap", () => {
     expect(urls).toContain(
       "https://www.skycool.com.mx/productos/ventilador-de-techo-industrial"
     );
+    expect(urls).toContain("https://www.skycool.com.mx/productos/extractor-de-aire");
+    expect(urls).toContain("https://www.skycool.com.mx/productos/ventilador-giratorio");
+    expect(urls).toContain("https://www.skycool.com.mx/productos/enfriador-evaporativo");
     expect(urls).toContain("https://www.skycool.com.mx/aviso-de-privacidad");
   });
 

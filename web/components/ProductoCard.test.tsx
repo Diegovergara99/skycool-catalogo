@@ -26,6 +26,16 @@ const productoSoloVenta: Producto = {
   variantes: [{ id: "ay-1220", nombre: "AY-1220", precioVenta: 17914 }],
 };
 
+const productoUnModeloRentaYVenta: Producto = {
+  id: "ventilador-giratorio",
+  nombre: "Ventilador giratorio",
+  categoria: "giratorio",
+  imagen: "/imagenes/ventilador-giratorio.jpg",
+  descripcion: "Descripción de prueba",
+  specs: [{ label: "Peso", valor: "29 kg" }],
+  variantes: [{ id: "ay-920b", nombre: "AY-920B", precioRenta: 650, precioVenta: 16310 }],
+};
+
 describe("ProductoCard", () => {
   it("muestra el precio de renta de la primera variante por defecto", () => {
     render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
@@ -88,9 +98,18 @@ describe("ProductoCard", () => {
     expect(screen.getByText(/Precio de venta: \$29,000/)).toBeInTheDocument();
   });
 
-  it("no incluye el bloque oculto de variantes cuando el producto tiene un solo modelo", () => {
+  it("no incluye el bloque oculto de variantes cuando el producto tiene un solo modelo y solo se vende", () => {
     render(<ProductoCard producto={productoSoloVenta} onAgregar={vi.fn()} />);
     expect(screen.queryByText(/Precio de venta:/)).not.toBeInTheDocument();
+  });
+
+  it("incluye el precio de venta oculto cuando el producto tiene un solo modelo pero se renta Y se vende", () => {
+    // Bug real: con un solo modelo, el bloque oculto se saltaba por
+    // completo, así que el precio de venta (no seleccionado por defecto)
+    // nunca aparecía en el HTML para productos como el ventilador
+    // giratorio, que tiene un único modelo pero dos precios.
+    render(<ProductoCard producto={productoUnModeloRentaYVenta} onAgregar={vi.fn()} />);
+    expect(screen.getByText(/Precio de venta: \$16,310/)).toBeInTheDocument();
   });
 
   it("llama a onAgregar con el item correcto", () => {

@@ -7,15 +7,17 @@ import { useCarrito } from "@/lib/carrito-context";
 import { construirCatalogoJsonLd } from "@/lib/schema";
 import type { Categoria } from "@/lib/types";
 
-// Solo estos dos productos tienen página propia (con contenido real y
-// dedicado, no una plantilla genérica) — el resto se queda en el catálogo.
-// El link de "Ver ficha completa" usa la ruta relativa; el JSON-LD necesita
-// la URL absoluta, porque el mismo producto usa el mismo @id en la portada
-// y en su página propia — si aquí dijera /#catalogo mientras la página
-// dedicada dice su propia URL, Google vería dos `url` distintos para el
-// mismo `@id`.
+// Cada producto tiene página propia (con contenido real y dedicado, no
+// una plantilla genérica). El link de "Ver ficha completa" usa la ruta
+// relativa; el JSON-LD necesita la URL absoluta, porque el mismo producto
+// usa el mismo @id en la portada y en su página propia — si aquí dijera
+// /#catalogo mientras la página dedicada dice su propia URL, Google vería
+// dos `url` distintos para el mismo `@id`.
 const PAGINAS_PRODUCTO: Partial<Record<string, string>> = {
+  "extractor-aire": "/productos/extractor-de-aire",
   "ventilador-piso": "/productos/ventilador-de-piso",
+  "ventilador-giratorio": "/productos/ventilador-giratorio",
+  "enfriador-evaporativo": "/productos/enfriador-evaporativo",
   "ventilador-techo": "/productos/ventilador-de-techo-industrial",
 };
 
