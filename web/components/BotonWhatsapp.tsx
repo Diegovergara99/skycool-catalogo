@@ -14,6 +14,10 @@ export default function BotonWhatsapp() {
       aria-label="Chatea con nosotros por WhatsApp"
       className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
     >
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 rounded-full bg-[#25D366] motion-safe:animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]"
+      />
       <svg
         viewBox="0 0 24 24"
         fill="currentColor"

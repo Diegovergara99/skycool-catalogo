@@ -4,16 +4,27 @@ import Instalaciones from "@/components/Instalaciones";
 import Catalogo from "@/components/Catalogo";
 import Sucursales from "@/components/Sucursales";
 import Contacto from "@/components/Contacto";
+import RevealSection from "@/components/RevealSection";
 
 export default function Home() {
   return (
     <main>
       <Hero />
-      <Nosotros />
-      <Instalaciones />
-      <Catalogo />
-      <Sucursales />
-      <Contacto />
+      <RevealSection>
+        <Nosotros />
+      </RevealSection>
+      <RevealSection>
+        <Instalaciones />
+      </RevealSection>
+      <RevealSection>
+        <Catalogo />
+      </RevealSection>
+      <RevealSection>
+        <Sucursales />
+      </RevealSection>
+      <RevealSection>
+        <Contacto />
+      </RevealSection>
     </main>
   );
 }
