@@ -8,6 +8,8 @@ import Header from "@/components/Header";
 import Carrito from "@/components/Carrito";
 import Footer from "@/components/Footer";
 import BotonWhatsapp from "@/components/BotonWhatsapp";
+import BotonInstagram from "@/components/BotonInstagram";
+import BarraCtaMovil from "@/components/BarraCtaMovil";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const barlow = Barlow_Condensed({
@@ -49,6 +51,7 @@ const ORGANIZACION_JSON_LD = {
   "@id": "https://www.skycool.com.mx/#organizacion",
   name: "SkyCool",
   url: "https://www.skycool.com.mx",
+  logo: "https://www.skycool.com.mx/logo.png",
   ...(process.env.NEXT_PUBLIC_INSTAGRAM_URL
     ? { sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL] }
     : {}),
@@ -90,6 +93,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
           <BotonWhatsapp />
+          <BotonInstagram />
+          <BarraCtaMovil />
         </CarritoProvider>
       </body>
     </html>

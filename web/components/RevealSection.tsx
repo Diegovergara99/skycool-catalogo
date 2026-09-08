@@ -27,7 +27,13 @@ export default function RevealSection({ children }: RevealSectionProps) {
           observador.disconnect();
         }
       },
-      { threshold: 0.15 }
+      // threshold 0.15 exigía que el 15% del ALTO TOTAL del elemento
+      // estuviera visible. En secciones largas (ej. Catálogo con varias
+      // tarjetas apiladas en móvil) eso tardaba tanto en cumplirse que el
+      // usuario veía un hueco en blanco varios scrolls antes de que
+      // apareciera el contenido. threshold 0 dispara con solo entrar un
+      // píxel en pantalla, sin importar qué tan larga sea la sección.
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
 
     observador.observe(elemento);

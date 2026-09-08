@@ -128,6 +128,17 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
           ))}
         </ul>
 
+        <p className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-teal-dark)]">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-3.5 w-3.5">
+            <path
+              fillRule="evenodd"
+              d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {tipo === "renta" ? "Entrega e instalación incluida" : "Garantía de 3 años"}
+        </p>
+
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold text-[var(--color-navy)]">

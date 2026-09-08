@@ -12,7 +12,7 @@ export default function BotonWhatsapp() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chatea con nosotros por WhatsApp"
-      className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+      className="fixed bottom-5 right-5 z-40 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:shadow-xl sm:flex"
     >
       <span
         aria-hidden="true"

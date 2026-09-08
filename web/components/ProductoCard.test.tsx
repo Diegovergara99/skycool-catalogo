@@ -112,6 +112,23 @@ describe("ProductoCard", () => {
     expect(screen.getByText(/Precio de venta: \$16,310/)).toBeInTheDocument();
   });
 
+  it("muestra 'Entrega e instalación incluida' junto al botón cuando el tipo activo es renta", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    expect(screen.getByText("Entrega e instalación incluida")).toBeInTheDocument();
+  });
+
+  it("cambia a 'Garantía de 3 años' junto al botón al seleccionar Venta", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    fireEvent.click(screen.getByText("Venta"));
+    expect(screen.getByText("Garantía de 3 años")).toBeInTheDocument();
+    expect(screen.queryByText("Entrega e instalación incluida")).not.toBeInTheDocument();
+  });
+
+  it("muestra 'Garantía de 3 años' en un producto que solo se vende", () => {
+    render(<ProductoCard producto={productoSoloVenta} onAgregar={vi.fn()} />);
+    expect(screen.getByText("Garantía de 3 años")).toBeInTheDocument();
+  });
+
   it("llama a onAgregar con el item correcto", () => {
     const onAgregar = vi.fn();
     render(<ProductoCard producto={productoDePrueba} onAgregar={onAgregar} />);

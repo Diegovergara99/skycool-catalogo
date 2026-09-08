@@ -36,44 +36,56 @@ const jsonLd = construirProductosJsonLd([producto], URL_PAGINA);
 
 export default function ExtractorDeAirePage() {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-16">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    <main className="relative overflow-hidden bg-gradient-to-br from-[var(--color-navy)] via-[#081420] to-black">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-teal)] opacity-10 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-[var(--color-teal-dark)] opacity-10 blur-3xl"
       />
 
-      <a href="/#catalogo" className="text-sm font-medium text-[var(--color-navy)] underline">
-        ← Volver al catálogo
-      </a>
+      <div className="relative mx-auto max-w-4xl px-4 pb-24 pt-16 sm:pb-16">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
 
-      <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
-        Extractor de aire industrial — ventilación forzada para interiores
-      </h1>
+        <a href="/#catalogo" className="text-sm font-medium text-[var(--color-teal)] underline">
+          ← Volver al catálogo
+        </a>
 
-      <p className="mt-4 text-slate-600">
-        Ventilador de extracción para espacios cerrados que necesitan intercambio de aire
-        forzado: talleres, bodegas cerradas, cocinas industriales. A diferencia de los
-        ventiladores de circulación, este saca el aire caliente o viciado hacia afuera en vez de
-        solo moverlo dentro del mismo espacio.
-      </p>
+        <h1 className="mt-4 font-heading text-3xl font-bold text-white md:text-4xl">
+          Extractor de aire industrial — ventilación forzada para interiores
+        </h1>
 
-      <div className="mt-6 rounded-lg border border-slate-200 p-5">
-        <h2 className="font-heading text-lg font-bold text-[var(--color-navy)]">
-          Ventajas técnicas
-        </h2>
-        <p className="mt-2 text-sm text-slate-600">
-          Motor DC (corriente continua), más eficiente y silencioso que uno de corriente alterna.
-          Flujo de aire de 38,000 m³/h con menos de 70 dB de ruido. Equipo de instalación fija —
-          <strong> solo venta</strong>, no disponible en renta.
+        <p className="mt-4 text-slate-300">
+          Ventilador de extracción para espacios cerrados que necesitan intercambio de aire
+          forzado: talleres, bodegas cerradas, cocinas industriales. A diferencia de los
+          ventiladores de circulación, este saca el aire caliente o viciado hacia afuera en vez
+          de solo moverlo dentro del mismo espacio.
         </p>
-      </div>
 
-      <p className="mt-6 text-sm text-slate-500">
-        Garantía de 3 años contra defectos de fábrica.
-      </p>
+        <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-5 backdrop-blur">
+          <h2 className="font-heading text-lg font-bold text-[var(--color-teal)]">
+            Ventajas técnicas
+          </h2>
+          <p className="mt-2 text-sm text-slate-300">
+            Motor DC (corriente continua), más eficiente y silencioso que uno de corriente
+            alterna. Flujo de aire de 38,000 m³/h con menos de 70 dB de ruido. Equipo de
+            instalación fija — <strong className="text-white">solo venta</strong>, no disponible
+            en renta.
+          </p>
+        </div>
 
-      <div className="mt-10 max-w-sm">
-        <ProductoCardStandalone producto={producto} />
+        <p className="mt-6 text-sm text-slate-400">
+          Garantía de 3 años contra defectos de fábrica.
+        </p>
+
+        <div className="mt-10 max-w-sm">
+          <ProductoCardStandalone producto={producto} />
+        </div>
       </div>
     </main>
   );

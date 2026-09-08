@@ -1,8 +1,10 @@
 import Hero from "@/components/Hero";
 import Nosotros from "@/components/Nosotros";
+import ComoFunciona from "@/components/ComoFunciona";
 import Instalaciones from "@/components/Instalaciones";
 import Catalogo from "@/components/Catalogo";
 import Sucursales from "@/components/Sucursales";
+import Faq from "@/components/Faq";
 import Contacto from "@/components/Contacto";
 import RevealSection from "@/components/RevealSection";
 
@@ -11,16 +13,22 @@ export default function Home() {
     <main>
       <Hero />
       <RevealSection>
+        <Catalogo />
+      </RevealSection>
+      <RevealSection>
         <Nosotros />
+      </RevealSection>
+      <RevealSection>
+        <ComoFunciona />
       </RevealSection>
       <RevealSection>
         <Instalaciones />
       </RevealSection>
       <RevealSection>
-        <Catalogo />
+        <Sucursales />
       </RevealSection>
       <RevealSection>
-        <Sucursales />
+        <Faq />
       </RevealSection>
       <RevealSection>
         <Contacto />

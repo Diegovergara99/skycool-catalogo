@@ -7,7 +7,7 @@ const ENLACES = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[var(--color-navy)] py-10 text-slate-300">
+    <footer className="bg-[var(--color-navy)] pb-24 pt-10 text-slate-300 sm:pb-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
         <div className="flex items-center gap-2">
           <svg viewBox="0 0 100 100" aria-hidden="true" className="h-6 w-6">
