@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitadorContacto } from "@/lib/rateLimit";
 
 const CORREO_DESTINO = "skycool.gdl@gmail.com";
 const REMITENTE = "SkyCool Web <onboarding@resend.dev>";
@@ -14,7 +15,18 @@ function esCorreoValido(correo: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
 }
 
+function obtenerIp(request: NextRequest): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "desconocida";
+}
+
 export async function POST(request: NextRequest) {
+  if (!limitadorContacto.permitir(obtenerIp(request))) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes. Espera unos minutos e intenta de nuevo." },
+      { status: 429 }
+    );
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json(

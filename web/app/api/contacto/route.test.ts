@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { NextRequest } from "next/server";
+import { limitadorContacto } from "@/lib/rateLimit";
 
 function construirRequest(body: unknown) {
   return new NextRequest("http://localhost:3000/api/contacto", {
@@ -19,6 +20,7 @@ const datosDePrueba = {
 describe("POST /api/contacto", () => {
   beforeEach(() => {
     delete process.env.RESEND_API_KEY;
+    limitadorContacto.reiniciar();
   });
 
   afterEach(() => {
@@ -87,6 +89,21 @@ describe("POST /api/contacto", () => {
     const { POST } = await import("./route");
     const res = await POST(construirRequest(datosDePrueba));
     expect(res.status).toBe(502);
+  });
+
+  it("devuelve 429 si se exceden las solicitudes permitidas para la misma IP", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ id: "abc" }), { status: 200 })
+    );
+    const { POST } = await import("./route");
+
+    for (let i = 0; i < 5; i++) {
+      const res = await POST(construirRequest(datosDePrueba));
+      expect(res.status).toBe(200);
+    }
+    const res = await POST(construirRequest(datosDePrueba));
+    expect(res.status).toBe(429);
   });
 
   it("devuelve 400 si el cuerpo de la solicitud no es JSON válido", async () => {
