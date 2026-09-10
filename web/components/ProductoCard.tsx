@@ -61,7 +61,7 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
       ref={cardRef}
       onMouseMove={inclinar}
       onMouseLeave={enderezar}
-      className="tarjeta-3d group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+      className="tarjeta-3d group relative flex flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50">
         <Image

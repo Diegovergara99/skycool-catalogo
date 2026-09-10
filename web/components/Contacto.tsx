@@ -3,6 +3,7 @@
 import { type FormEvent, useState } from "react";
 import { construirLinkContacto } from "@/lib/whatsapp";
 import { useEnviarCorreoContacto } from "@/lib/useEnviarCorreoContacto";
+import { formatearTelefono } from "@/lib/formatearTelefono";
 import SectionEyebrow from "./SectionEyebrow";
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "[TU WHATSAPP]";
@@ -58,7 +59,7 @@ export default function Contacto() {
         <SectionEyebrow variant="dark">Contacto</SectionEyebrow>
         <h2 className="mt-3 font-heading text-3xl font-bold text-white">Contacto</h2>
         <div className="mt-6 grid gap-8 md:grid-cols-2">
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4 md:justify-center">
           <a
             href={`https://wa.me/${WHATSAPP_NUMERO}`}
             className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 text-slate-600 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -68,7 +69,7 @@ export default function Contacto() {
             </svg>
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-400">WhatsApp</p>
-              <p className="font-medium text-[var(--color-navy)]">{WHATSAPP_NUMERO}</p>
+              <p className="font-medium text-[var(--color-navy)]">{formatearTelefono(WHATSAPP_NUMERO)}</p>
             </div>
           </a>
           <a
