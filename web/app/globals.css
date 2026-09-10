@@ -39,6 +39,47 @@ body {
   }
 }
 
+.tarjeta-3d {
+  --rot-x: 0deg;
+  --rot-y: 0deg;
+  --gx: 50%;
+  --gy: 50%;
+  transform: perspective(900px) rotateX(var(--rot-x)) rotateY(var(--rot-y));
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.tarjeta-3d:hover {
+  transform: perspective(900px) rotateX(var(--rot-x)) rotateY(var(--rot-y)) translateY(-0.25rem);
+  box-shadow:
+    0 1.5rem 2.5rem -1rem rgba(34, 211, 211, 0.25),
+    0 0.5rem 1.25rem -0.5rem rgba(0, 0, 0, 0.35);
+}
+
+.tarjeta-3d::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(16rem 12rem at var(--gx) var(--gy), rgba(34, 211, 211, 0.16), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
+
+.tarjeta-3d:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-3d,
+  .tarjeta-3d:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
 @media print {
   body * {
     visibility: hidden;

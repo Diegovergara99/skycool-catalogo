@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import type { Producto } from "@/lib/types";
 import type { ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
@@ -15,6 +15,30 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
   const tieneRenta = producto.variantes.every((v) => v.precioRenta !== undefined);
   const [varianteId, setVarianteId] = useState(producto.variantes[0].id);
   const [tipo, setTipo] = useState<TipoOperacion>(tieneRenta ? "renta" : "venta");
+  const cardRef = useRef<HTMLElement>(null);
+
+  // Inclinación 3D sutil que sigue al cursor. Se escribe directo al estilo
+  // del elemento (en vez de useState) para no re-renderizar en cada
+  // movimiento del mouse — con decenas de tarjetas en el catálogo, actualizar
+  // React en cada pixel de movimiento sería notablemente más lento.
+  function inclinar(e: React.MouseEvent<HTMLElement>) {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    el.style.setProperty("--rot-x", `${(0.5 - py) * 8}deg`);
+    el.style.setProperty("--rot-y", `${(px - 0.5) * 8}deg`);
+    el.style.setProperty("--gx", `${px * 100}%`);
+    el.style.setProperty("--gy", `${py * 100}%`);
+  }
+
+  function enderezar() {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.setProperty("--rot-x", "0deg");
+    el.style.setProperty("--rot-y", "0deg");
+  }
 
   const variante = producto.variantes.find((v) => v.id === varianteId) ?? producto.variantes[0];
   const precio = tipo === "renta" ? (variante.precioRenta ?? variante.precioVenta) : variante.precioVenta;
@@ -33,7 +57,12 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
   }
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+    <article
+      ref={cardRef}
+      onMouseMove={inclinar}
+      onMouseLeave={enderezar}
+      className="tarjeta-3d group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50">
         <Image
           src={producto.imagen}

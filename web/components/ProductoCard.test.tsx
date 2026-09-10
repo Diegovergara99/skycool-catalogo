@@ -129,6 +129,30 @@ describe("ProductoCard", () => {
     expect(screen.getByText("Garantía de 3 años")).toBeInTheDocument();
   });
 
+  it("inclina la tarjeta en 3D al mover el mouse y la endereza al salir", () => {
+    const { container } = render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    const article = container.querySelector("article")!;
+    vi.spyOn(article, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 100,
+      right: 200,
+      bottom: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    } as DOMRect);
+
+    fireEvent.mouseMove(article, { clientX: 190, clientY: 10 });
+    expect(article.style.getPropertyValue("--rot-y")).not.toBe("0deg");
+    expect(article.style.getPropertyValue("--rot-x")).not.toBe("0deg");
+
+    fireEvent.mouseLeave(article);
+    expect(article.style.getPropertyValue("--rot-x")).toBe("0deg");
+    expect(article.style.getPropertyValue("--rot-y")).toBe("0deg");
+  });
+
   it("llama a onAgregar con el item correcto", () => {
     const onAgregar = vi.fn();
     render(<ProductoCard producto={productoDePrueba} onAgregar={onAgregar} />);
