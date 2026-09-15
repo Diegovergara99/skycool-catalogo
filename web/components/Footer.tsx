@@ -1,6 +1,7 @@
 const ENLACES = [
   { href: "/#catalogo", etiqueta: "Catálogo" },
   { href: "/#nosotros", etiqueta: "Nosotros" },
+  { href: "/blog", etiqueta: "Blog" },
   { href: "/#sucursales", etiqueta: "Sucursales" },
   { href: "/#contacto", etiqueta: "Contacto" },
 ];
@@ -25,7 +26,7 @@ export default function Footer() {
           </svg>
           <p className="font-heading text-xl font-bold text-white">SKYCOOL</p>
         </div>
-        <nav className="flex gap-5 text-sm">
+        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
           {ENLACES.map((enlace) => (
             <a key={enlace.href} href={enlace.href} className="hover:text-white">
               {enlace.etiqueta}

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { entradasBlog } from "@/lib/blog";
 
 const SITIO = "https://www.skycool.com.mx";
 
@@ -46,5 +47,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    {
+      url: `${SITIO}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    ...entradasBlog.map((entrada) => ({
+      url: `${SITIO}/blog/${entrada.slug}`,
+      lastModified: new Date(entrada.fechaPublicacion),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 }

@@ -16,6 +16,18 @@ describe("sitemap", () => {
     expect(urls).toContain("https://www.skycool.com.mx/aviso-de-privacidad");
   });
 
+  it("incluye el blog y sus 4 entradas", () => {
+    const entradas = sitemap();
+    const urls = entradas.map((e) => e.url);
+    expect(urls).toContain("https://www.skycool.com.mx/blog");
+    expect(urls).toContain("https://www.skycool.com.mx/blog/cuantos-ventiladores-necesito");
+    expect(urls).toContain("https://www.skycool.com.mx/blog/ventilador-piso-vs-techo");
+    expect(urls).toContain(
+      "https://www.skycool.com.mx/blog/ventilador-vs-enfriador-evaporativo"
+    );
+    expect(urls).toContain("https://www.skycool.com.mx/blog/renta-ventiladores-para-eventos");
+  });
+
   it("no incluye las páginas de resultado de pago (son noindex)", () => {
     const entradas = sitemap();
     const urls = entradas.map((e) => e.url);

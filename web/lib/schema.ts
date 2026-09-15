@@ -1,6 +1,29 @@
 import type { Producto } from "./types";
+import type { EntradaBlog } from "./blog";
 
 const SITIO = "https://www.skycool.com.mx";
+
+/**
+ * JSON-LD BlogPosting para una entrada del blog. `author`/`publisher`
+ * referencian el `@id` de la Organization ya declarada en el layout raíz
+ * (mismo patrón que `branchOf` en las sucursales) en vez de repetir sus
+ * datos completos aquí.
+ */
+export function construirArticuloJsonLd(entrada: EntradaBlog, urlPagina: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: entrada.titulo,
+    description: entrada.descripcion,
+    datePublished: entrada.fechaPublicacion,
+    dateModified: entrada.fechaPublicacion,
+    url: urlPagina,
+    mainEntityOfPage: { "@type": "WebPage", "@id": urlPagina },
+    author: { "@id": `${SITIO}/#organizacion` },
+    publisher: { "@id": `${SITIO}/#organizacion` },
+    inLanguage: "es-MX",
+  };
+}
 
 /**
  * Construye el JSON-LD (Schema.org) del catálogo para que Google entienda

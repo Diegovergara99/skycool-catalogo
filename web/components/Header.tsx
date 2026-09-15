@@ -6,6 +6,7 @@ import { useCarrito } from "@/lib/carrito-context";
 const ENLACES = [
   { href: "/#catalogo", etiqueta: "Catálogo" },
   { href: "/#nosotros", etiqueta: "Nosotros" },
+  { href: "/blog", etiqueta: "Blog" },
   { href: "/#sucursales", etiqueta: "Sucursales" },
   { href: "/#contacto", etiqueta: "Contacto" },
 ];
@@ -42,7 +43,7 @@ export default function Header() {
           <button
             type="button"
             onClick={abrirCarrito}
-            className="relative rounded-md bg-[var(--color-teal)] px-4 py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)]"
+            className="relative flex h-11 items-center justify-center rounded-md bg-[var(--color-teal)] px-4 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)]"
           >
             Carrito
             {cantidadTotal > 0 && (

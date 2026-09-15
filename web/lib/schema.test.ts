@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { construirProductosJsonLd, construirCatalogoJsonLd } from "./schema";
+import { construirProductosJsonLd, construirCatalogoJsonLd, construirArticuloJsonLd } from "./schema";
 import type { Producto } from "./types";
+import type { EntradaBlog } from "./blog";
 
 const productoRentaYVenta: Producto = {
   id: "ventilador-piso",
@@ -114,5 +115,30 @@ describe("construirCatalogoJsonLd", () => {
     expect(jsonLd["@graph"]).toHaveLength(3);
     expect(jsonLd["@graph"][0].url).toBe("https://www.skycool.com.mx/productos/ventilador-de-piso");
     expect(jsonLd["@graph"][2].url).toBe("https://www.skycool.com.mx/#catalogo");
+  });
+});
+
+describe("construirArticuloJsonLd", () => {
+  const entrada: EntradaBlog = {
+    slug: "cuantos-ventiladores-necesito",
+    titulo: "¿Cuántos ventiladores industriales necesitas según los metros cuadrados?",
+    descripcion: "Descripción de prueba",
+    palabraClave: "cuántos ventiladores necesito",
+    fechaPublicacion: "2026-09-14",
+  };
+  const url = "https://www.skycool.com.mx/blog/cuantos-ventiladores-necesito";
+
+  it("genera un BlogPosting con los datos de la entrada", () => {
+    const jsonLd = construirArticuloJsonLd(entrada, url);
+    expect(jsonLd["@type"]).toBe("BlogPosting");
+    expect(jsonLd.headline).toBe(entrada.titulo);
+    expect(jsonLd.datePublished).toBe("2026-09-14");
+    expect(jsonLd.url).toBe(url);
+  });
+
+  it("referencia a la Organization como author y publisher vía @id", () => {
+    const jsonLd = construirArticuloJsonLd(entrada, url);
+    expect(jsonLd.author).toEqual({ "@id": "https://www.skycool.com.mx/#organizacion" });
+    expect(jsonLd.publisher).toEqual({ "@id": "https://www.skycool.com.mx/#organizacion" });
   });
 });
