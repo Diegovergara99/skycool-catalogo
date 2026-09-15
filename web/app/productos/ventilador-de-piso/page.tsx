@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { productos } from "@/lib/productos";
 import { sucursales } from "@/lib/sucursales";
-import { construirProductosJsonLd } from "@/lib/schema";
+import { construirProductosJsonLd, construirBreadcrumbJsonLd } from "@/lib/schema";
 import ProductoCardStandalone from "@/components/ProductoCardStandalone";
+import ProductosRelacionados from "@/components/ProductosRelacionados";
 
 const producto = productos.find((p) => p.id === "ventilador-piso")!;
 const URL_PAGINA = "https://www.skycool.com.mx/productos/ventilador-de-piso";
@@ -34,6 +35,11 @@ export const metadata: Metadata = {
 };
 
 const jsonLd = construirProductosJsonLd([producto], URL_PAGINA);
+const breadcrumbJsonLd = construirBreadcrumbJsonLd([
+  { nombre: "Inicio", url: "https://www.skycool.com.mx/" },
+  { nombre: "Catálogo", url: "https://www.skycool.com.mx/#catalogo" },
+  { nombre: producto.nombre, url: URL_PAGINA },
+]);
 
 export default function VentiladorDePisoPage() {
   return (
@@ -51,6 +57,10 @@ export default function VentiladorDePisoPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
 
         <a href="/#catalogo" className="text-sm font-medium text-[var(--color-teal)] underline">
@@ -97,6 +107,8 @@ export default function VentiladorDePisoPage() {
         <div className="mt-10 max-w-sm">
           <ProductoCardStandalone producto={producto} />
         </div>
+
+        <ProductosRelacionados idActual="ventilador-piso" />
       </div>
     </main>
   );

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { obtenerEntradaBlog } from "@/lib/blog";
 import { sucursales, listaCiudades } from "@/lib/sucursales";
-import { construirArticuloJsonLd } from "@/lib/schema";
+import { construirArticuloJsonLd, construirBreadcrumbJsonLd } from "@/lib/schema";
 
 const entrada = obtenerEntradaBlog("ventilador-piso-vs-techo")!;
 const URL_PAGINA = "https://www.skycool.com.mx/blog/ventilador-piso-vs-techo";
@@ -27,6 +27,11 @@ export const metadata: Metadata = {
 };
 
 const jsonLd = construirArticuloJsonLd(entrada, URL_PAGINA);
+const breadcrumbJsonLd = construirBreadcrumbJsonLd([
+  { nombre: "Inicio", url: "https://www.skycool.com.mx/" },
+  { nombre: "Blog", url: "https://www.skycool.com.mx/blog" },
+  { nombre: entrada.titulo, url: URL_PAGINA },
+]);
 
 const COMPARACION = [
   { criterio: "Renta disponible", piso: "Sí, desde $950/día", techo: "No, solo venta" },
@@ -51,6 +56,7 @@ export default function VentiladorPisoVsTechoPage() {
 
       <div className="relative mx-auto max-w-3xl px-4 pb-24 pt-16 sm:pb-16">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
         <Link href="/blog" className="text-sm font-medium text-[var(--color-teal)] underline">
           ← Volver al blog

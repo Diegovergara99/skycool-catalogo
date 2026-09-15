@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { construirProductosJsonLd, construirCatalogoJsonLd, construirArticuloJsonLd } from "./schema";
+import {
+  construirProductosJsonLd,
+  construirCatalogoJsonLd,
+  construirArticuloJsonLd,
+  construirBreadcrumbJsonLd,
+} from "./schema";
 import type { Producto } from "./types";
 import type { EntradaBlog } from "./blog";
 
@@ -27,15 +32,34 @@ const productoSoloVenta: Producto = {
 };
 
 describe("construirProductosJsonLd", () => {
-  it("genera un @graph con un Product por cada variante de cada producto", () => {
+  it("genera un @graph con un Product por cada variante de cada producto, más un ProductGroup por cada producto multi-variante", () => {
     const jsonLd = construirProductosJsonLd([productoRentaYVenta, productoSoloVenta]);
     expect(jsonLd["@context"]).toBe("https://schema.org");
-    expect(jsonLd["@graph"]).toHaveLength(3);
+    // 2 variantes de piso + 1 del extractor + 1 ProductGroup (solo piso
+    // tiene 2+ variantes, el extractor no genera grupo).
+    expect(jsonLd["@graph"]).toHaveLength(4);
+  });
+
+  it("agrega un ProductGroup con hasVariant para un producto con 2+ modelos", () => {
+    const jsonLd = construirProductosJsonLd([productoRentaYVenta]);
+    const grupo: any = jsonLd["@graph"].find((n: any) => n["@type"] === "ProductGroup");
+    expect(grupo).toBeDefined();
+    expect(grupo.name).toBe("Ventilador de piso");
+    expect(grupo.hasVariant).toEqual([
+      { "@id": "https://www.skycool.com.mx/#ventilador-piso-dm-110" },
+      { "@id": "https://www.skycool.com.mx/#ventilador-piso-dm-220" },
+    ]);
+  });
+
+  it("no agrega ProductGroup para un producto con un solo modelo", () => {
+    const jsonLd = construirProductosJsonLd([productoSoloVenta]);
+    const grupo = jsonLd["@graph"].find((n) => n["@type"] === "ProductGroup");
+    expect(grupo).toBeUndefined();
   });
 
   it("un producto con renta y venta tiene dos Offer: LeaseOut y Sell", () => {
     const jsonLd = construirProductosJsonLd([productoRentaYVenta]);
-    const producto = jsonLd["@graph"][0];
+    const producto: any = jsonLd["@graph"][0];
     expect(producto.offers).toHaveLength(2);
     expect(producto.offers[0].businessFunction).toBe("https://schema.org/LeaseOut");
     expect(producto.offers[0].price).toBe(950);
@@ -45,7 +69,7 @@ describe("construirProductosJsonLd", () => {
 
   it("un producto solo de venta tiene un único Offer: Sell", () => {
     const jsonLd = construirProductosJsonLd([productoSoloVenta]);
-    const producto = jsonLd["@graph"][0];
+    const producto: any = jsonLd["@graph"][0];
     expect(producto.offers).toHaveLength(1);
     expect(producto.offers[0].businessFunction).toBe("https://schema.org/Sell");
     expect(producto.offers[0].price).toBe(17914);
@@ -53,13 +77,13 @@ describe("construirProductosJsonLd", () => {
 
   it("marca los precios como sin IVA (valueAddedTaxIncluded: false), igual que se muestran en el sitio", () => {
     const jsonLd = construirProductosJsonLd([productoSoloVenta]);
-    const oferta = jsonLd["@graph"][0].offers[0];
+    const oferta = (jsonLd["@graph"][0] as any).offers[0];
     expect(oferta.priceSpecification.valueAddedTaxIncluded).toBe(false);
   });
 
   it("la oferta de renta usa UnitPriceSpecification con unitText 'día'", () => {
     const jsonLd = construirProductosJsonLd([productoRentaYVenta]);
-    const ofertaRenta = jsonLd["@graph"][0].offers[0];
+    const ofertaRenta = (jsonLd["@graph"][0] as any).offers[0];
     expect(ofertaRenta.priceSpecification["@type"]).toBe("UnitPriceSpecification");
     expect(ofertaRenta.priceSpecification.unitText).toBe("día");
   });
@@ -72,7 +96,7 @@ describe("construirProductosJsonLd", () => {
 
   it("usa /#catalogo como url por defecto si no se especifica una página", () => {
     const jsonLd = construirProductosJsonLd([productoSoloVenta]);
-    const producto = jsonLd["@graph"][0];
+    const producto: any = jsonLd["@graph"][0];
     expect(producto.url).toBe("https://www.skycool.com.mx/#catalogo");
     expect(producto.offers[0].url).toBe("https://www.skycool.com.mx/#catalogo");
   });
@@ -82,7 +106,7 @@ describe("construirProductosJsonLd", () => {
       [productoSoloVenta],
       "https://www.skycool.com.mx/productos/extractor-de-aire"
     );
-    const producto = jsonLd["@graph"][0];
+    const producto: any = jsonLd["@graph"][0];
     expect(producto.url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
     expect(producto.offers[0].url).toBe("https://www.skycool.com.mx/productos/extractor-de-aire");
   });
@@ -112,9 +136,29 @@ describe("construirCatalogoJsonLd", () => {
     const jsonLd = construirCatalogoJsonLd([productoRentaYVenta, productoSoloVenta], {
       "ventilador-piso": "https://www.skycool.com.mx/productos/ventilador-de-piso",
     });
-    expect(jsonLd["@graph"]).toHaveLength(3);
+    // 2 Product + 1 ProductGroup del piso, más 1 Product del extractor.
+    expect(jsonLd["@graph"]).toHaveLength(4);
     expect(jsonLd["@graph"][0].url).toBe("https://www.skycool.com.mx/productos/ventilador-de-piso");
-    expect(jsonLd["@graph"][2].url).toBe("https://www.skycool.com.mx/#catalogo");
+    expect(jsonLd["@graph"].at(-1)!.url).toBe("https://www.skycool.com.mx/#catalogo");
+  });
+});
+
+describe("construirBreadcrumbJsonLd", () => {
+  it("genera un BreadcrumbList con position secuencial desde 1", () => {
+    const jsonLd = construirBreadcrumbJsonLd([
+      { nombre: "Inicio", url: "https://www.skycool.com.mx/" },
+      { nombre: "Catálogo", url: "https://www.skycool.com.mx/#catalogo" },
+      { nombre: "Ventilador de piso", url: "https://www.skycool.com.mx/productos/ventilador-de-piso" },
+    ]);
+    expect(jsonLd["@type"]).toBe("BreadcrumbList");
+    expect(jsonLd.itemListElement).toHaveLength(3);
+    expect(jsonLd.itemListElement[0]).toEqual({
+      "@type": "ListItem",
+      position: 1,
+      name: "Inicio",
+      item: "https://www.skycool.com.mx/",
+    });
+    expect(jsonLd.itemListElement[2].position).toBe(3);
   });
 });
 

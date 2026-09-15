@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { productos } from "@/lib/productos";
-import { construirProductosJsonLd } from "@/lib/schema";
+import { construirProductosJsonLd, construirBreadcrumbJsonLd } from "@/lib/schema";
 import ProductoCardStandalone from "@/components/ProductoCardStandalone";
+import ProductosRelacionados from "@/components/ProductosRelacionados";
 
 const producto = productos.find((p) => p.id === "enfriador-evaporativo")!;
 const URL_PAGINA = "https://www.skycool.com.mx/productos/enfriador-evaporativo";
@@ -33,6 +34,11 @@ export const metadata: Metadata = {
 };
 
 const jsonLd = construirProductosJsonLd([producto], URL_PAGINA);
+const breadcrumbJsonLd = construirBreadcrumbJsonLd([
+  { nombre: "Inicio", url: "https://www.skycool.com.mx/" },
+  { nombre: "Catálogo", url: "https://www.skycool.com.mx/#catalogo" },
+  { nombre: producto.nombre, url: URL_PAGINA },
+]);
 
 export default function EnfriadorEvaporativoPage() {
   return (
@@ -50,6 +56,10 @@ export default function EnfriadorEvaporativoPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
 
         <a href="/#catalogo" className="text-sm font-medium text-[var(--color-teal)] underline">
@@ -100,6 +110,8 @@ export default function EnfriadorEvaporativoPage() {
         <div className="mt-10 max-w-sm">
           <ProductoCardStandalone producto={producto} />
         </div>
+
+        <ProductosRelacionados idActual="enfriador-evaporativo" />
       </div>
     </main>
   );

@@ -3,7 +3,7 @@ import Script from "next/script";
 import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
-import { listaCiudades } from "@/lib/sucursales";
+import { sucursales } from "@/lib/sucursales";
 import { construirScriptGtag } from "@/lib/analytics";
 import Header from "@/components/Header";
 import Carrito from "@/components/Carrito";
@@ -19,8 +19,14 @@ const barlow = Barlow_Condensed({
   variable: "--font-barlow",
 });
 
-const TITULO = "SkyCool — Venta y renta de ventilación para eventos y espacios grandes";
-const DESCRIPCION = `Ventiladores de piso, giratorios, de techo, extractores de aire y enfriadores evaporativos en venta y renta. Cobertura en ${listaCiudades()}.`;
+// Título y descripción recortados a los límites seguros de un buscador
+// (~60 y ~155-160 caracteres) para que Google no los corte a mitad de
+// palabra en los resultados — antes tenían 70 y 200 caracteres. La lista
+// completa de ciudades sigue disponible en el Hero, Nosotros y Sucursales;
+// aquí solo se usa el conteo (dinámico, no un número fijo) para no repetir
+// el bug ya corregido antes de una lista de ciudades desactualizada.
+const TITULO = "SkyCool — Venta y renta de ventilación industrial";
+const DESCRIPCION = `Renta y venta de ventiladores industriales, extractores y enfriadores evaporativos, con entrega e instalación en ${sucursales.length} ciudades de México.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.skycool.com.mx"),
@@ -77,6 +83,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZACION_JSON_LD) }}
         />
+        {GA_MEASUREMENT_ID && (
+          <>
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            <link rel="preconnect" href="https://www.google-analytics.com" />
+          </>
+        )}
         {GA_MEASUREMENT_ID && (
           // strategy="lazyOnload": Google Analytics no necesita competir por
           // el hilo principal mientras la página recién carga — una

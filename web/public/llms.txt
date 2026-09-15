@@ -1,0 +1,28 @@
+# SkyCool
+
+> SkyCool es una empresa mexicana de venta y renta de equipo de ventilación
+> industrial (ventiladores de piso, ventiladores giratorios, ventiladores de
+> techo industrial, extractores de aire y enfriadores evaporativos), con
+> presencia en Guadalajara, Tonalá, Ciudad de México, Monterrey, Culiacán,
+> León y Santa Rosa. La renta incluye entrega, instalación en sitio y
+> recolección; el equipo de venta incluye garantía de 3 años.
+
+## Catálogo
+
+- [Ventilador de piso](https://www.skycool.com.mx/productos/ventilador-de-piso): renta o venta, cobertura 400-500 m².
+- [Ventilador de techo industrial](https://www.skycool.com.mx/productos/ventilador-de-techo-industrial): solo venta, tres tamaños, cobertura hasta 2,462 m².
+- [Extractor de aire](https://www.skycool.com.mx/productos/extractor-de-aire): solo venta, para espacios cerrados.
+- [Ventilador giratorio](https://www.skycool.com.mx/productos/ventilador-giratorio): renta o venta, compacto y portátil.
+- [Enfriador evaporativo](https://www.skycool.com.mx/productos/enfriador-evaporativo): renta o venta, único equipo que baja la temperatura real.
+
+## Guías
+
+- [¿Cuántos ventiladores necesitas según tus m²?](https://www.skycool.com.mx/blog/cuantos-ventiladores-necesito)
+- [Ventilador de piso vs. de techo industrial](https://www.skycool.com.mx/blog/ventilador-piso-vs-techo)
+- [Ventilador vs. enfriador evaporativo](https://www.skycool.com.mx/blog/ventilador-vs-enfriador-evaporativo)
+- [Renta de ventiladores para eventos](https://www.skycool.com.mx/blog/renta-ventiladores-para-eventos)
+
+## Otras páginas
+
+- [Preguntas frecuentes y contacto](https://www.skycool.com.mx/#preguntas-frecuentes)
+- [Aviso de privacidad](https://www.skycool.com.mx/aviso-de-privacidad)

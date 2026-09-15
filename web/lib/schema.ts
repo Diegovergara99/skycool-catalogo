@@ -4,6 +4,23 @@ import type { EntradaBlog } from "./blog";
 const SITIO = "https://www.skycool.com.mx";
 
 /**
+ * JSON-LD BreadcrumbList a partir de una lista ordenada de
+ * {nombre, url} — de la raíz del sitio hacia la página actual.
+ */
+export function construirBreadcrumbJsonLd(items: { nombre: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, indice) => ({
+      "@type": "ListItem",
+      position: indice + 1,
+      name: item.nombre,
+      item: item.url,
+    })),
+  };
+}
+
+/**
  * JSON-LD BlogPosting para una entrada del blog. `author`/`publisher`
  * referencian el `@id` de la Organization ya declarada en el layout raíz
  * (mismo patrón que `branchOf` en las sucursales) en vez de repetir sus
@@ -38,56 +55,80 @@ export function construirProductosJsonLd(
   productos: Producto[],
   urlPagina: string = `${SITIO}/#catalogo`
 ) {
-  return {
-    "@context": "https://schema.org",
-    "@graph": productos.flatMap((producto) =>
-      producto.variantes.map((variante) => {
-        const offers = [];
+  const nodosProducto = productos.flatMap((producto) =>
+    producto.variantes.map((variante) => {
+      const offers = [];
 
-        if (variante.precioRenta !== undefined) {
-          offers.push({
-            "@type": "Offer",
-            businessFunction: "https://schema.org/LeaseOut",
-            price: variante.precioRenta,
-            priceCurrency: "MXN",
-            priceSpecification: {
-              "@type": "UnitPriceSpecification",
-              price: variante.precioRenta,
-              priceCurrency: "MXN",
-              unitText: "día",
-              valueAddedTaxIncluded: false,
-            },
-            availability: "https://schema.org/InStock",
-            url: urlPagina,
-          });
-        }
-
+      if (variante.precioRenta !== undefined) {
         offers.push({
           "@type": "Offer",
-          businessFunction: "https://schema.org/Sell",
-          price: variante.precioVenta,
+          businessFunction: "https://schema.org/LeaseOut",
+          price: variante.precioRenta,
           priceCurrency: "MXN",
           priceSpecification: {
-            "@type": "PriceSpecification",
-            price: variante.precioVenta,
+            "@type": "UnitPriceSpecification",
+            price: variante.precioRenta,
             priceCurrency: "MXN",
+            unitText: "día",
             valueAddedTaxIncluded: false,
           },
           availability: "https://schema.org/InStock",
           url: urlPagina,
         });
+      }
 
-        return {
-          "@type": "Product",
-          "@id": `${SITIO}/#${producto.id}-${variante.id}`,
-          name: `${producto.nombre} ${variante.nombre}`,
-          description: producto.descripcion,
-          image: `${SITIO}${producto.imagen}`,
-          url: urlPagina,
-          offers,
-        };
-      })
-    ),
+      offers.push({
+        "@type": "Offer",
+        businessFunction: "https://schema.org/Sell",
+        price: variante.precioVenta,
+        priceCurrency: "MXN",
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          price: variante.precioVenta,
+          priceCurrency: "MXN",
+          valueAddedTaxIncluded: false,
+        },
+        availability: "https://schema.org/InStock",
+        url: urlPagina,
+      });
+
+      return {
+        "@type": "Product",
+        "@id": `${SITIO}/#${producto.id}-${variante.id}`,
+        name: `${producto.nombre} ${variante.nombre}`,
+        description: producto.descripcion,
+        image: `${SITIO}${producto.imagen}`,
+        url: urlPagina,
+        offers,
+      };
+    })
+  );
+
+  // Un producto con 2+ modelos (ej. DM-110/DM-220, o W14/W20/W26) declara
+  // cada modelo como su propio `Product`, pero los 2-3 comparten la misma
+  // URL — Google generalmente solo puede mostrar UN producto por URL en
+  // resultados enriquecidos, así que sin este `ProductGroup` los demás
+  // modelos declarados quedan "invisibles" para ese resultado aunque su
+  // schema sea válido. `ProductGroup` + `hasVariant` es el patrón que
+  // Google recomienda desde 2022 para este caso exacto. Se agrega como
+  // nodos adicionales al final del `@graph`, sin mover ni renumerar los
+  // `Product` ya existentes.
+  const gruposDeVariantes = productos
+    .filter((producto) => producto.variantes.length > 1)
+    .map((producto) => ({
+      "@type": "ProductGroup",
+      "@id": `${SITIO}/#${producto.id}-grupo`,
+      name: producto.nombre,
+      description: producto.descripcion,
+      url: urlPagina,
+      hasVariant: producto.variantes.map((variante) => ({
+        "@id": `${SITIO}/#${producto.id}-${variante.id}`,
+      })),
+    }));
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [...nodosProducto, ...gruposDeVariantes],
   };
 }
 
