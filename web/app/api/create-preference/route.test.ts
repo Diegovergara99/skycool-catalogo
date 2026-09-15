@@ -43,6 +43,13 @@ describe("POST /api/create-preference", () => {
     expect(res.status).toBe(503);
   });
 
+  it("nunca revela el nombre de la variable de entorno faltante al cliente", async () => {
+    const { POST } = await import("./route");
+    const res = await POST(construirRequest({ items: [itemDePrueba] }));
+    const json = await res.json();
+    expect(json.error).not.toMatch(/MP_ACCESS_TOKEN|\.env/i);
+  });
+
   it("devuelve 400 si el carrito está vacío", async () => {
     process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
     const { POST } = await import("./route");

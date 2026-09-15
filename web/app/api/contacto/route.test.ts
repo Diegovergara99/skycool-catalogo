@@ -33,6 +33,13 @@ describe("POST /api/contacto", () => {
     expect(res.status).toBe(503);
   });
 
+  it("nunca revela el nombre de la variable de entorno faltante al cliente", async () => {
+    const { POST } = await import("./route");
+    const res = await POST(construirRequest(datosDePrueba));
+    const json = await res.json();
+    expect(json.error).not.toMatch(/RESEND_API_KEY|\.env/i);
+  });
+
   it("devuelve 400 si falta nombre, correo o mensaje", async () => {
     process.env.RESEND_API_KEY = "re_test";
     const { POST } = await import("./route");

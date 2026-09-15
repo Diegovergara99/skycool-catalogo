@@ -10,11 +10,13 @@ function esTipoValido(tipo: unknown): tipo is TipoOperacion {
 export async function POST(request: NextRequest) {
   const accessToken = process.env.MP_ACCESS_TOKEN;
   if (!accessToken) {
+    // El detalle (qué variable falta) solo va al log del servidor — nunca
+    // al cliente. Revelar nombres de variables de entorno o que falta
+    // configuración es información que un atacante puede usar; el usuario
+    // final solo necesita saber que el pago no está disponible ahora mismo.
+    console.error("create-preference: MP_ACCESS_TOKEN no está configurado en este entorno.");
     return NextResponse.json(
-      {
-        error:
-          "MP_ACCESS_TOKEN no configurado. Agrega tus llaves de Mercado Pago en .env.local antes de aceptar pagos.",
-      },
+      { error: "El pago en línea no está disponible en este momento. Intenta por WhatsApp." },
       { status: 503 }
     );
   }

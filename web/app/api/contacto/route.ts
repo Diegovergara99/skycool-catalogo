@@ -29,11 +29,12 @@ export async function POST(request: NextRequest) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
+    // El detalle solo va al log del servidor, nunca a la respuesta que ve
+    // el usuario — revelar nombres de variables de entorno es información
+    // que un atacante puede usar.
+    console.error("contacto: RESEND_API_KEY no está configurado en este entorno.");
     return NextResponse.json(
-      {
-        error:
-          "RESEND_API_KEY no configurado. Agrega tu llave de Resend en .env.local antes de enviar correos.",
-      },
+      { error: "No se pudo enviar el correo en este momento. Intenta por WhatsApp." },
       { status: 503 }
     );
   }
