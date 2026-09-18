@@ -1,7 +1,68 @@
 import type { Producto } from "./types";
 import type { EntradaBlog } from "./blog";
+import type { Sucursal } from "./sucursales";
 
 const SITIO = "https://www.skycool.com.mx";
+
+/**
+ * JSON-LD Organization del sitio. Extraído a una función (en vez de vivir
+ * como constante directa en layout.tsx) para que next.config.ts pueda
+ * generar el mismo string exacto al calcular su hash SHA-256 para el CSP
+ * (ver "Content-Security-Policy" ahí) — el navegador solo ejecuta un
+ * <script> inline si su contenido coincide byte a byte con un hash
+ * declarado, así que esta función es la única fuente de verdad para ese
+ * contenido, usada tanto en runtime como en build time.
+ */
+export function construirOrganizacionJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${SITIO}/#organizacion`,
+    name: "SkyCool",
+    url: SITIO,
+    logo: `${SITIO}/logo.png`,
+    ...(process.env.NEXT_PUBLIC_INSTAGRAM_URL
+      ? { sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL] }
+      : {}),
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: `+52${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.slice(2) ?? ""}`,
+        contactType: "sales",
+        areaServed: "MX",
+        availableLanguage: ["es"],
+      },
+    ],
+  };
+}
+
+/**
+ * JSON-LD LocalBusiness/Store por cada sucursal. Misma razón que
+ * `construirOrganizacionJsonLd`: se extrae a una función pura para que
+ * next.config.ts pueda calcular el hash SHA-256 exacto de este contenido
+ * en build time.
+ */
+export function construirSucursalesJsonLd(sucursales: Sucursal[]) {
+  const whatsappNumero = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+  return {
+    "@context": "https://schema.org",
+    "@graph": sucursales.map((s) => ({
+      "@type": ["LocalBusiness", "Store"],
+      "@id": `${SITIO}/#sucursal-${s.id}`,
+      name: `SkyCool ${s.ciudad}`,
+      url: `${SITIO}/#sucursales`,
+      branchOf: { "@id": `${SITIO}/#organizacion` },
+      ...(whatsappNumero ? { telephone: `+52${whatsappNumero.slice(2)}` } : {}),
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: s.direccion,
+        addressLocality: s.ciudad,
+        addressRegion: s.estado,
+        addressCountry: "MX",
+      },
+    })),
+  };
+}
 
 /**
  * JSON-LD BreadcrumbList a partir de una lista ordenada de

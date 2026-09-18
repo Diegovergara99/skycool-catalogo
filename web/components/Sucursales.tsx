@@ -1,32 +1,9 @@
 import { sucursales } from "@/lib/sucursales";
+import { construirSucursalesJsonLd } from "@/lib/schema";
 import SectionEyebrow from "./SectionEyebrow";
 
-const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-
 export default function Sucursales() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": sucursales.map((s) => ({
-      "@type": ["LocalBusiness", "Store"],
-      "@id": `https://www.skycool.com.mx/#sucursal-${s.id}`,
-      name: `SkyCool ${s.ciudad}`,
-      url: "https://www.skycool.com.mx/#sucursales",
-      branchOf: { "@id": "https://www.skycool.com.mx/#organizacion" },
-      // Mismo WhatsApp central que usa la Organization — es el único
-      // teléfono real que tenemos. Si en el futuro cada sucursal tiene su
-      // propio número (por ejemplo al dar de alta su Google Business
-      // Profile), hay que reemplazarlo por el real de esa sucursal en vez
-      // de reutilizar este.
-      ...(WHATSAPP_NUMERO ? { telephone: `+52${WHATSAPP_NUMERO.slice(2)}` } : {}),
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: s.direccion,
-        addressLocality: s.ciudad,
-        addressRegion: s.estado,
-        addressCountry: "MX",
-      },
-    })),
-  };
+  const jsonLd = construirSucursalesJsonLd(sucursales);
 
   return (
     <section

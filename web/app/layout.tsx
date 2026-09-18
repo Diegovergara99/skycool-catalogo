@@ -5,6 +5,7 @@ import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
 import { sucursales } from "@/lib/sucursales";
 import { construirScriptGtag } from "@/lib/analytics";
+import { construirOrganizacionJsonLd } from "@/lib/schema";
 import Header from "@/components/Header";
 import Carrito from "@/components/Carrito";
 import Footer from "@/components/Footer";
@@ -52,26 +53,7 @@ export const metadata: Metadata = {
   },
 };
 
-const ORGANIZACION_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": "https://www.skycool.com.mx/#organizacion",
-  name: "SkyCool",
-  url: "https://www.skycool.com.mx",
-  logo: "https://www.skycool.com.mx/logo.png",
-  ...(process.env.NEXT_PUBLIC_INSTAGRAM_URL
-    ? { sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL] }
-    : {}),
-  contactPoint: [
-    {
-      "@type": "ContactPoint",
-      telephone: `+52${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.slice(2) ?? ""}`,
-      contactType: "sales",
-      areaServed: "MX",
-      availableLanguage: ["es"],
-    },
-  ],
-};
+const ORGANIZACION_JSON_LD = construirOrganizacionJsonLd();
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
