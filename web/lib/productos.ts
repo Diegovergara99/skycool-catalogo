@@ -50,6 +50,7 @@ export const productos: Producto[] = [
         specs: [
           { label: "Alcance de aire", valor: "hasta 30 m" },
           { label: "Alimentación", valor: "110V/50Hz" },
+          { label: "Corriente", valor: "5.45 A" },
         ],
       },
       {
