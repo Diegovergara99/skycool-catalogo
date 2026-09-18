@@ -147,6 +147,73 @@ describe("POST /api/create-preference", () => {
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
+  it("aplica el descuento del 15% en unit_price cuando dias es 3, usando el precio oficial de catálogo", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const { POST } = await import("./route");
+
+    const itemRenta3Dias = {
+      productoId: "ventilador-piso",
+      varianteId: "dm-110",
+      nombreProducto: "Ventilador de piso",
+      nombreVariante: "DM-110 (conexión a 110V)",
+      tipo: "renta",
+      precioUnitario: 1, // manipulado — el server debe ignorarlo
+      cantidad: 1,
+      dias: 3,
+    };
+
+    const res = await POST(construirRequest({ items: [itemRenta3Dias] }));
+    expect(res.status).toBe(200);
+    // Precio oficial de catálogo (renta) para dm-110 es $950/día.
+    // $950 × 3 × 0.85 = $2,422.50
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          items: expect.arrayContaining([expect.objectContaining({ unit_price: 2422.5 })]),
+        }),
+      })
+    );
+  });
+
+  it("ignora dias manipulado en un item de venta (no aplica el concepto)", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const { POST } = await import("./route");
+
+    const itemVentaConDias = { ...itemDePrueba, tipo: "venta", dias: 3 };
+
+    const res = await POST(construirRequest({ items: [itemVentaConDias] }));
+    expect(res.status).toBe(200);
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          items: expect.arrayContaining([expect.objectContaining({ unit_price: 17914 })]),
+        }),
+      })
+    );
+  });
+
+  it.each([0, 2, 4, "3", -3])("devuelve 400 si dias es un valor no válido (%s)", async (diasInvalido) => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    const { POST } = await import("./route");
+
+    const itemDiasInvalido = {
+      productoId: "ventilador-piso",
+      varianteId: "dm-110",
+      nombreProducto: "Ventilador de piso",
+      nombreVariante: "DM-110 (conexión a 110V)",
+      tipo: "renta",
+      precioUnitario: 950,
+      cantidad: 1,
+      dias: diasInvalido,
+    };
+
+    const res = await POST(construirRequest({ items: [itemDiasInvalido] }));
+    expect(res.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
   it("devuelve 400 si el cuerpo de la solicitud no es JSON válido", async () => {
     process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
     const { POST } = await import("./route");

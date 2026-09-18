@@ -3,7 +3,8 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import type { Producto } from "@/lib/types";
-import type { ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
+import type { ItemCarrito, TipoOperacion, DiasRenta } from "@/lib/carrito-reducer";
+import { calcularImporteUnitario } from "@/lib/carrito-reducer";
 import { formatMoneda } from "@/lib/formatMoneda";
 
 interface ProductoCardProps {
@@ -15,6 +16,7 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
   const tieneRenta = producto.variantes.every((v) => v.precioRenta !== undefined);
   const [varianteId, setVarianteId] = useState(producto.variantes[0].id);
   const [tipo, setTipo] = useState<TipoOperacion>(tieneRenta ? "renta" : "venta");
+  const [dias, setDias] = useState<DiasRenta>(1);
   const cardRef = useRef<HTMLElement>(null);
 
   // Inclinación 3D sutil que sigue al cursor. Se escribe directo al estilo
@@ -41,7 +43,13 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
   }
 
   const variante = producto.variantes.find((v) => v.id === varianteId) ?? producto.variantes[0];
+  // `precio` es siempre el precio "de catálogo" por día (renta) o de venta,
+  // sin descuento — es lo que se guarda como precioUnitario en el carrito.
+  // `precioMostrado` es lo que ve el cliente: con el descuento del paquete
+  // de 3 días aplicado si lo seleccionó, calculado por la misma función que
+  // usa el carrito y el servidor, para que nunca se desincronicen.
   const precio = tipo === "renta" ? (variante.precioRenta ?? variante.precioVenta) : variante.precioVenta;
+  const precioMostrado = calcularImporteUnitario(precio, tipo, dias);
   const specs = [...producto.specs, ...(variante.specs ?? [])];
 
   function agregar() {
@@ -53,6 +61,7 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
       tipo,
       precioUnitario: precio,
       cantidad: 1,
+      ...(tipo === "renta" ? { dias } : {}),
     });
   }
 
@@ -149,6 +158,26 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
           </div>
         )}
 
+        {tipo === "renta" && (
+          <div className="flex rounded-md border border-slate-200 p-1 text-xs font-medium">
+            {([1, 3] as const).map((opcion) => (
+              <button
+                key={opcion}
+                type="button"
+                aria-pressed={dias === opcion}
+                onClick={() => setDias(opcion)}
+                className={`flex-1 rounded py-1.5 transition ${
+                  dias === opcion
+                    ? "bg-[var(--color-teal)] text-[var(--color-navy)]"
+                    : "text-slate-500"
+                }`}
+              >
+                {opcion === 1 ? "1 día" : "3 días (-15%)"}
+              </button>
+            ))}
+          </div>
+        )}
+
         <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-500">
           {specs.map((s) => (
             <li key={s.label}>
@@ -171,7 +200,7 @@ export default function ProductoCard({ producto, onAgregar }: ProductoCardProps)
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold text-[var(--color-navy)]">
-              {formatMoneda(precio)}
+              {formatMoneda(precioMostrado)}
             </span>
             <span className="text-xs text-slate-400">+ IVA</span>
           </div>

@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   calcularTotales,
-  calcularPaquete3Dias,
   separarPorTipo,
   generarNumeroCotizacion,
   formatearFechaCotizacion,
@@ -52,13 +51,13 @@ describe("calcularTotales", () => {
   it("devuelve ceros para un arreglo vacío", () => {
     expect(calcularTotales([])).toEqual({ subtotal: 0, iva: 0, totalConIva: 0 });
   });
-});
 
-describe("calcularPaquete3Dias", () => {
-  it("aplica 3 días con 15% de descuento (caso real verificado contra la plantilla)", () => {
-    const paquete = calcularPaquete3Dias(2534);
-    expect(paquete.sinIva).toBeCloseTo(6461.7, 2);
-    expect(paquete.conIva).toBeCloseTo(7495.57, 2);
+  it("aplica el descuento del paquete de 3 días cuando un item lo tiene seleccionado", () => {
+    const item3Dias: ItemCarrito = { ...itemPisoRenta, dias: 3, cantidad: 1 };
+    // $941/día × 3 días × 0.85 = $2,399.55 — mismo caso real, ahora
+    // seleccionado por línea en vez de como sección aparte del total.
+    const totales = calcularTotales([item3Dias]);
+    expect(totales.subtotal).toBeCloseTo(2399.55, 2);
   });
 });
 

@@ -165,6 +165,58 @@ describe("ProductoCard", () => {
       tipo: "renta",
       precioUnitario: 900,
       cantidad: 1,
+      dias: 1,
+    });
+  });
+
+  it("muestra el selector de días '1 día' / '3 días (-15%)' cuando el tipo activo es renta", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    expect(screen.getByRole("button", { name: "1 día" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "3 días (-15%)" })).toBeInTheDocument();
+  });
+
+  it("no muestra el selector de días cuando el tipo activo es venta", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    fireEvent.click(screen.getByText("Venta"));
+    expect(screen.queryByRole("button", { name: "1 día" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "3 días (-15%)" })).not.toBeInTheDocument();
+  });
+
+  it("expone el estado seleccionado del selector de días vía aria-pressed, con 1 día activo por defecto", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    const boton1Dia = screen.getByRole("button", { name: "1 día" });
+    const boton3Dias = screen.getByRole("button", { name: "3 días (-15%)" });
+
+    expect(boton1Dia).toHaveAttribute("aria-pressed", "true");
+    expect(boton3Dias).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(boton3Dias);
+
+    expect(boton1Dia).toHaveAttribute("aria-pressed", "false");
+    expect(boton3Dias).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("aplica el descuento del 15% al precio mostrado al seleccionar 3 días", () => {
+    render(<ProductoCard producto={productoDePrueba} onAgregar={vi.fn()} />);
+    // DM-110 renta: $900/día × 3 × 0.85 = $2,295
+    fireEvent.click(screen.getByRole("button", { name: "3 días (-15%)" }));
+    expect(screen.getByText("$2,295")).toBeInTheDocument();
+  });
+
+  it("agrega el item al carrito con dias: 3 cuando ese es el seleccionado", () => {
+    const onAgregar = vi.fn();
+    render(<ProductoCard producto={productoDePrueba} onAgregar={onAgregar} />);
+    fireEvent.click(screen.getByRole("button", { name: "3 días (-15%)" }));
+    fireEvent.click(screen.getByText("Agregar al carrito"));
+    expect(onAgregar).toHaveBeenCalledWith({
+      productoId: "ventilador-piso",
+      varianteId: "dm-110",
+      nombreProducto: "Ventilador de piso",
+      nombreVariante: "DM-110",
+      tipo: "renta",
+      precioUnitario: 900,
+      cantidad: 1,
+      dias: 3,
     });
   });
 });

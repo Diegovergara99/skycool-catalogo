@@ -33,6 +33,14 @@ describe("construirMensajeWhatsapp", () => {
     expect(construirMensajeWhatsapp([])).toContain("cotizar");
   });
 
+  it("indica '3 días (-15%)' y aplica el descuento al total cuando el item se rentó a 3 días", () => {
+    const items3Dias: ItemCarrito[] = [{ ...items[0], dias: 3, cantidad: 1 }];
+    const mensaje = construirMensajeWhatsapp(items3Dias);
+    expect(mensaje).toContain("3 días (-15%)");
+    // $1,200 × 3 × 0.85 = $3,060
+    expect(mensaje).toContain("3,060");
+  });
+
   it("muestra 'Venta' para items con tipo venta", () => {
     const itemsVenta: ItemCarrito[] = [
       {

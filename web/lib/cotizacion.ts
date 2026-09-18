@@ -1,7 +1,7 @@
 import type { ItemCarrito } from "./carrito-reducer";
+import { calcularImporteItem } from "./carrito-reducer";
 
 export const TASA_IVA = 0.16;
-const DESCUENTO_PAQUETE_3_DIAS = 0.15;
 
 export interface TotalesCotizacion {
   subtotal: number;
@@ -9,20 +9,16 @@ export interface TotalesCotizacion {
   totalConIva: number;
 }
 
+// El subtotal de cada línea ya refleja el descuento del paquete de 3 días
+// cuando el cliente lo seleccionó (ver ItemCarrito.dias en
+// carrito-reducer.ts) — antes esto se aproximaba con una sección aparte
+// ("PAQUETE 3 DÍAS") calculada sobre el total completo asumiendo que TODO
+// se rentaría a 3 días; ahora que el cliente elige los días por producto,
+// ese cálculo genérico se reemplazó por el desglose real por línea.
 export function calcularTotales(items: ItemCarrito[]): TotalesCotizacion {
-  const subtotal = items.reduce((acc, item) => acc + item.precioUnitario * item.cantidad, 0);
+  const subtotal = items.reduce((acc, item) => acc + calcularImporteItem(item), 0);
   const iva = subtotal * TASA_IVA;
   return { subtotal, iva, totalConIva: subtotal + iva };
-}
-
-export interface PaqueteTresDias {
-  sinIva: number;
-  conIva: number;
-}
-
-export function calcularPaquete3Dias(subtotalPorDia: number): PaqueteTresDias {
-  const sinIva = subtotalPorDia * 3 * (1 - DESCUENTO_PAQUETE_3_DIAS);
-  return { sinIva, conIva: sinIva * (1 + TASA_IVA) };
 }
 
 export function separarPorTipo(items: ItemCarrito[]): {

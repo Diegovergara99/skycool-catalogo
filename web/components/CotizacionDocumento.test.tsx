@@ -67,20 +67,25 @@ describe("CotizacionDocumento (renta)", () => {
     expect(screen.getByText("$2,939.44")).toBeInTheDocument();
   });
 
-  it("muestra el paquete de 3 días con el descuento correcto", () => {
+  it("muestra el importe con el descuento del 15% aplicado por línea cuando un item se rentó a 3 días", () => {
+    const itemsCon3Dias: ItemCarrito[] = [
+      { ...itemsRenta[0], dias: 3 },
+      itemsRenta[1],
+    ];
     render(
       <CotizacionDocumento
         tipo="renta"
-        items={itemsRenta}
+        items={itemsCon3Dias}
         cliente="Juan Pérez"
         atencion=""
         numero="SKY-20260902-0001"
         fecha="02/09/2026"
       />
     );
-    expect(screen.getByText("PAQUETE 3 DÍAS · 15% DE DESCUENTO")).toBeInTheDocument();
-    expect(screen.getByText(/\$6,461\.70 sin IVA/)).toBeInTheDocument();
-    expect(screen.getByText("$7,495.57")).toBeInTheDocument();
+    // La descripción de la línea indica los 3 días y el descuento.
+    expect(screen.getByText(/\(3 días, -15%\)/)).toBeInTheDocument();
+    // $941/día × 2 unidades × 3 días × 0.85 = $4,799.10 (importe de esa línea sin IVA).
+    expect(screen.getByText("$4,799.10")).toBeInTheDocument();
   });
 
   it("muestra las condiciones de renta y la nota de envío/instalación", () => {

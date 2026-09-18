@@ -46,6 +46,35 @@ describe("Carrito", () => {
     expect(screen.getByText("$1,200")).toBeInTheDocument();
   });
 
+  it("muestra el importe con descuento y la etiqueta '3 días (-15%)' para una renta de 3 días", () => {
+    function Iniciador3Dias() {
+      const { agregarProducto } = useCarrito();
+      useEffect(() => {
+        agregarProducto({
+          productoId: "extractor-aire",
+          varianteId: "ay-1220",
+          nombreProducto: "Extractor de aire",
+          nombreVariante: "AY-1220",
+          tipo: "renta",
+          precioUnitario: 1200,
+          cantidad: 1,
+          dias: 3,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, []);
+      return null;
+    }
+    render(
+      <CarritoProvider>
+        <Iniciador3Dias />
+        <Carrito />
+      </CarritoProvider>
+    );
+    // $1,200 × 3 × 0.85 = $3,060
+    expect(screen.getByText("$3,060")).toBeInTheDocument();
+    expect(screen.getByText(/3 días \(-15%\)/)).toBeInTheDocument();
+  });
+
   it("aumenta la cantidad al presionar +", () => {
     renderCarritoConProducto();
     fireEvent.click(screen.getByLabelText("Aumentar cantidad de Extractor de aire"));

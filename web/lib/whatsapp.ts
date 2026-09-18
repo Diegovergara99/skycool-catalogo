@@ -1,15 +1,17 @@
 import type { ItemCarrito } from "./carrito-reducer";
+import { calcularImporteItem } from "./carrito-reducer";
 
 export function construirMensajeWhatsapp(items: ItemCarrito[]): string {
   if (items.length === 0) {
     return "Hola, quiero cotizar equipo de SkyCool.";
   }
 
-  const lineas = items.map(
-    (i) =>
-      `• ${i.nombreProducto} (${i.nombreVariante}) — ${i.tipo === "renta" ? "Renta" : "Venta"} x${i.cantidad}`
-  );
-  const total = items.reduce((acc, i) => acc + i.precioUnitario * i.cantidad, 0);
+  const lineas = items.map((i) => {
+    const etiquetaTipo =
+      i.tipo === "renta" ? `Renta ${i.dias === 3 ? "3 días (-15%)" : "1 día"}` : "Venta";
+    return `• ${i.nombreProducto} (${i.nombreVariante}) — ${etiquetaTipo} x${i.cantidad}`;
+  });
+  const total = items.reduce((acc, i) => acc + calcularImporteItem(i), 0);
 
   return [
     "Hola, quiero cotizar los siguientes equipos SkyCool:",

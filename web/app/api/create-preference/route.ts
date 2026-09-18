@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import type { ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
+import type { DiasRenta, ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
+import { calcularImporteUnitario } from "@/lib/carrito-reducer";
 import { resolverPrecioOficial } from "@/lib/productos";
 
 function esTipoValido(tipo: unknown): tipo is TipoOperacion {
   return tipo === "renta" || tipo === "venta";
+}
+
+function esDiasValido(dias: unknown): dias is DiasRenta | undefined {
+  return dias === undefined || dias === 1 || dias === 3;
 }
 
 export async function POST(request: NextRequest) {
@@ -36,15 +41,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "El carrito está vacío." }, { status: 400 });
   }
 
-  // Nunca confiar en precioUnitario/cantidad tal cual llegan del cliente:
-  // resolvemos el precio oficial del catálogo por productoId/varianteId/tipo
-  // y validamos la cantidad, para que nadie pueda manipular el monto a cobrar
+  // Nunca confiar en precioUnitario/cantidad/dias tal cual llegan del
+  // cliente: resolvemos el precio oficial del catálogo por
+  // productoId/varianteId/tipo, validamos la cantidad y los días de renta, y
+  // recalculamos el descuento del paquete de 3 días con la misma función que
+  // usa el carrito y el PDF, para que nadie pueda manipular el monto a cobrar
   // llamando a esta ruta directamente (curl/Postman) con precios fabricados.
   const itemsMercadoPago: { id: string; title: string; quantity: number; unit_price: number; currency_id: string }[] = [];
 
   for (const item of items) {
     if (!esTipoValido(item.tipo)) {
       return NextResponse.json({ error: "Tipo de operación no válido." }, { status: 400 });
+    }
+
+    if (!esDiasValido(item.dias)) {
+      return NextResponse.json({ error: "Días de renta no válidos." }, { status: 400 });
     }
 
     if (!Number.isInteger(item.cantidad) || item.cantidad <= 0) {
@@ -59,13 +70,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Producto no válido." }, { status: 400 });
     }
 
+    const precioUnitario = calcularImporteUnitario(precioOficial, item.tipo, item.dias ?? 1);
+    const sufijoDias = item.tipo === "renta" && item.dias === 3 ? " · 3 días (-15%)" : "";
+
     itemsMercadoPago.push({
       id: `${item.productoId}__${item.varianteId}`,
       title: `${item.nombreProducto} — ${item.nombreVariante} (${
         item.tipo === "renta" ? "Renta" : "Venta"
-      })`,
+      })${sufijoDias}`,
       quantity: item.cantidad,
-      unit_price: precioOficial,
+      unit_price: precioUnitario,
       currency_id: "MXN",
     });
   }

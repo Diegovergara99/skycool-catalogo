@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { CarritoProvider, useCarrito } from "./carrito-context";
-import type { ItemCarrito } from "./carrito-reducer";
+import { claveItem, type ItemCarrito } from "./carrito-reducer";
 
 const item: ItemCarrito = {
   productoId: "extractor-aire",
@@ -48,7 +48,7 @@ describe("CarritoProvider / useCarrito", () => {
   it("actualizarCantidad a 0 quita el producto", () => {
     const { result } = renderHook(() => useCarrito(), { wrapper });
     act(() => result.current.agregarProducto(item));
-    const clave = `${item.productoId}__${item.varianteId}__${item.tipo}`;
+    const clave = claveItem(item);
     act(() => result.current.actualizarCantidad(clave, 0));
     expect(result.current.items).toHaveLength(0);
   });

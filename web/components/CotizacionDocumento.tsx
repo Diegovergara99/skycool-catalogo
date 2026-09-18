@@ -1,5 +1,6 @@
 import type { ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
-import { calcularTotales, calcularPaquete3Dias, TASA_IVA } from "@/lib/cotizacion";
+import { calcularImporteItem } from "@/lib/carrito-reducer";
+import { calcularTotales, TASA_IVA } from "@/lib/cotizacion";
 import { formatMonedaConCentavos } from "@/lib/formatMoneda";
 
 interface CotizacionDocumentoProps {
@@ -34,12 +35,11 @@ export default function CotizacionDocumento({
   fecha,
 }: CotizacionDocumentoProps) {
   const totales = calcularTotales(items);
-  const paquete3Dias = tipo === "renta" ? calcularPaquete3Dias(totales.subtotal) : null;
   const condiciones = tipo === "renta" ? CONDICIONES_RENTA : CONDICIONES_VENTA;
   const tituloSeccion = tipo === "renta" ? "RENTA DE EQUIPO" : "VENTA DE EQUIPO";
   const columnaPrecio = tipo === "renta" ? "RENTA DÍA" : "P. UNITARIO";
-  const columnaImporte = tipo === "renta" ? "IMPORTE DÍA" : "IMPORTE";
-  const etiquetaTotal = tipo === "renta" ? "TOTAL POR DÍA" : "TOTAL";
+  const columnaImporte = "IMPORTE";
+  const etiquetaTotal = "TOTAL";
 
   return (
     <div className="mb-8 break-after-page bg-white text-[var(--color-navy)] last:break-after-auto print:mb-0">
@@ -106,15 +106,16 @@ export default function CotizacionDocumento({
             </thead>
             <tbody>
               {items.map((item) => {
-                const importeSinIva = item.precioUnitario * item.cantidad;
+                const importeSinIva = calcularImporteItem(item);
                 return (
                   <tr
-                    key={`${item.productoId}__${item.varianteId}__${item.tipo}`}
+                    key={`${item.productoId}__${item.varianteId}__${item.tipo}__${item.dias ?? 1}`}
                     className="border-b border-slate-100"
                   >
                     <td className="p-2">{item.cantidad}</td>
                     <td className="p-2">
                       {item.nombreProducto} — {item.nombreVariante}
+                      {item.tipo === "renta" && item.dias === 3 && " (3 días, -15%)"}
                     </td>
                     <td className="p-2 text-right">
                       {formatMonedaConCentavos(item.precioUnitario)}
@@ -149,19 +150,6 @@ export default function CotizacionDocumento({
             </span>
           </div>
         </div>
-
-        {paquete3Dias && (
-          <div className="mt-6 flex items-center justify-between border-l-4 border-[var(--color-teal)] bg-slate-50 p-4">
-            <p className="font-heading font-bold">PAQUETE 3 DÍAS · 15% DE DESCUENTO</p>
-            <p>
-              {formatMonedaConCentavos(paquete3Dias.sinIva)} sin IVA /{" "}
-              <span className="font-bold text-[var(--color-navy)]">
-                {formatMonedaConCentavos(paquete3Dias.conIva)}
-              </span>{" "}
-              con IVA
-            </p>
-          </div>
-        )}
 
         <p className="mt-4 border-l-2 border-[var(--color-teal)] pl-3 text-xs text-slate-600">
           {tipo === "renta"

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useCarrito } from "@/lib/carrito-context";
 import { useCheckoutMercadoPago } from "@/lib/useCheckoutMercadoPago";
-import { claveItem } from "@/lib/carrito-reducer";
+import { claveItem, calcularImporteItem } from "@/lib/carrito-reducer";
 import { construirLinkWhatsapp } from "@/lib/whatsapp";
 import { formatMoneda } from "@/lib/formatMoneda";
 import { useDialogoAccesible } from "@/lib/useDialogoAccesible";
@@ -79,7 +79,10 @@ export default function Carrito() {
                 <div>
                   <p className="font-medium text-[var(--color-navy)]">{item.nombreProducto}</p>
                   <p className="text-xs text-slate-500">
-                    {item.nombreVariante} · {item.tipo === "renta" ? "Renta/día" : "Venta"}
+                    {item.nombreVariante} ·{" "}
+                    {item.tipo === "renta"
+                      ? `Renta ${item.dias === 3 ? "3 días (-15%)" : "1 día"}`
+                      : "Venta"}
                   </p>
                   <div className="mt-2 flex items-center gap-2">
                     <button
@@ -103,7 +106,7 @@ export default function Carrito() {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-[var(--color-navy)]">
-                    {formatMoneda(item.precioUnitario * item.cantidad)}
+                    {formatMoneda(calcularImporteItem(item))}
                   </p>
                   <button
                     type="button"
