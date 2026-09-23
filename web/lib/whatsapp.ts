@@ -53,3 +53,46 @@ export function construirLinkContacto(
   const texto = `Hola, soy ${nombre} (tel: ${telefono}). ${mensaje}`;
   return construirLinkWaMe(numero, texto);
 }
+
+/**
+ * Mensaje para confirmar disponibilidad de renta antes de pagar en línea —
+ * la renta necesita entrega/instalación/recolección en sitio, así que el
+ * pago no se habilita hasta confirmar que hay equipo disponible para las
+ * fechas del cliente en su ciudad.
+ */
+export function construirMensajeDisponibilidadRenta(items: ItemCarrito[], ciudad: string): string {
+  const lineas = items.map((i) => {
+    const etiquetaTipo =
+      i.tipo === "renta" ? `Renta ${i.dias === 3 ? "3 días (-15%)" : "1 día"}` : "Venta";
+    return `• ${i.nombreProducto} (${i.nombreVariante}) — ${etiquetaTipo} x${i.cantidad}`;
+  });
+
+  return [
+    `Hola, quiero confirmar disponibilidad de renta en ${ciudad} para:`,
+    "",
+    ...lineas,
+    "",
+    "¿Está disponible para las fechas que necesito?",
+  ].join("\n");
+}
+
+export function construirLinkDisponibilidadRenta(
+  numero: string,
+  items: ItemCarrito[],
+  ciudad: string
+): string {
+  return construirLinkWaMe(numero, construirMensajeDisponibilidadRenta(items, ciudad));
+}
+
+/**
+ * Para ciudades donde todavía no hay sucursal SkyCool — se pregunta
+ * cobertura en vez de ofrecer pago en línea, porque la renta no se puede
+ * cumplir logísticamente fuera de las ciudades con sucursal.
+ */
+export function construirMensajeCoberturaRenta(ciudad: string): string {
+  return `Hola, quiero rentar equipo de SkyCool en ${ciudad}. No veo esa ciudad entre las que tienen sucursal — ¿tienen cobertura ahí?`;
+}
+
+export function construirLinkCoberturaRenta(numero: string, ciudad: string): string {
+  return construirLinkWaMe(numero, construirMensajeCoberturaRenta(ciudad));
+}

@@ -4,7 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useCarrito } from "@/lib/carrito-context";
 import { useCheckoutMercadoPago } from "@/lib/useCheckoutMercadoPago";
 import { claveItem, calcularImporteItem } from "@/lib/carrito-reducer";
-import { construirLinkWhatsapp } from "@/lib/whatsapp";
+import {
+  construirLinkWhatsapp,
+  construirLinkDisponibilidadRenta,
+  construirLinkCoberturaRenta,
+} from "@/lib/whatsapp";
+import { evaluarDisponibilidadRenta } from "@/lib/disponibilidad-renta";
+import { sucursales } from "@/lib/sucursales";
 import { formatMoneda } from "@/lib/formatMoneda";
 import { useDialogoAccesible } from "@/lib/useDialogoAccesible";
 import Cotizacion from "./Cotizacion";
@@ -18,6 +24,7 @@ export default function Carrito() {
   const cerrarBotonRef = useRef<HTMLButtonElement>(null);
   const dialogoRef = useRef<HTMLDivElement>(null);
   const [cotizacionAbierta, setCotizacionAbierta] = useState(false);
+  const [ciudad, setCiudad] = useState("");
 
   useDialogoAccesible(dialogoRef, abierto && !cotizacionAbierta);
 
@@ -38,6 +45,7 @@ export default function Carrito() {
 
   const carritoVacio = items.length === 0;
   const linkWhatsapp = construirLinkWhatsapp(WHATSAPP_NUMERO, items);
+  const estadoRenta = evaluarDisponibilidadRenta(items, ciudad);
 
   return (
     <>
@@ -152,6 +160,32 @@ export default function Carrito() {
             Cotizar por WhatsApp
           </a>
 
+          {estadoRenta !== "sin_renta" && (
+            <label className="mt-4 block text-sm font-medium text-slate-600">
+              Tu ciudad
+              <select
+                className="mt-1 w-full rounded-md border border-slate-300 p-2 text-sm"
+                value={ciudad}
+                onChange={(e) => setCiudad(e.target.value)}
+              >
+                <option value="">Selecciona tu ciudad</option>
+                {sucursales.map((s) => (
+                  <option key={s.id} value={s.ciudad}>
+                    {s.ciudad}
+                  </option>
+                ))}
+                <option value="Otra ciudad">Otra ciudad</option>
+              </select>
+            </label>
+          )}
+
+          {estadoRenta === "sin_sucursal" && (
+            <p className="mt-2 text-xs text-amber-600">
+              Por ahora no tenemos servicio de renta en tu ciudad. Pregunta por WhatsApp o ajusta
+              tu carrito a solo compra.
+            </p>
+          )}
+
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -162,14 +196,48 @@ export default function Carrito() {
               Cotización PDF
             </button>
 
-            <button
-              type="button"
-              disabled={carritoVacio || cargando}
-              onClick={() => pagar(items)}
-              className="rounded-md bg-[var(--color-teal)] py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
-            >
-              {cargando ? "Conectando…" : "Pagar en línea"}
-            </button>
+            {estadoRenta === "sin_renta" && (
+              <button
+                type="button"
+                disabled={carritoVacio || cargando}
+                onClick={() => pagar(items)}
+                className="rounded-md bg-[var(--color-teal)] py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+              >
+                {cargando ? "Conectando…" : "Pagar en línea"}
+              </button>
+            )}
+
+            {estadoRenta === "falta_ciudad" && (
+              <button
+                type="button"
+                disabled
+                className="rounded-md bg-slate-100 py-2 text-sm font-semibold text-slate-400"
+              >
+                Selecciona tu ciudad
+              </button>
+            )}
+
+            {estadoRenta === "con_sucursal" && (
+              <a
+                href={construirLinkDisponibilidadRenta(WHATSAPP_NUMERO, items, ciudad)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center rounded-md bg-green-600 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+              >
+                Confirmar disponibilidad
+              </a>
+            )}
+
+            {estadoRenta === "sin_sucursal" && (
+              <a
+                href={construirLinkCoberturaRenta(WHATSAPP_NUMERO, ciudad)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center rounded-md bg-green-600 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+              >
+                Preguntar por WhatsApp
+              </a>
+            )}
           </div>
         </div>
       </div>

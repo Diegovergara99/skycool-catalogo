@@ -4,6 +4,10 @@ import {
   construirLinkWhatsapp,
   construirLinkContacto,
   construirLinkWhatsappMensaje,
+  construirMensajeDisponibilidadRenta,
+  construirLinkDisponibilidadRenta,
+  construirMensajeCoberturaRenta,
+  construirLinkCoberturaRenta,
 } from "./whatsapp";
 import type { ItemCarrito } from "./carrito-reducer";
 
@@ -92,6 +96,40 @@ describe("construirLinkWhatsappMensaje", () => {
     );
     expect(link).toMatch(/^https:\/\/wa\.me\/5215555555555\?text=/);
     expect(decodeURIComponent(link)).toContain("tuve un problema al pagar");
+  });
+});
+
+describe("construirMensajeDisponibilidadRenta", () => {
+  it("incluye la ciudad, los items del carrito y pregunta por disponibilidad", () => {
+    const mensaje = construirMensajeDisponibilidadRenta(items, "Guadalajara");
+    expect(mensaje).toContain("Guadalajara");
+    expect(mensaje).toContain("Extractor de aire");
+    expect(mensaje).toContain("disponibilidad");
+  });
+});
+
+describe("construirLinkDisponibilidadRenta", () => {
+  it("arma un link wa.me con la ciudad y los items codificados", () => {
+    const link = construirLinkDisponibilidadRenta("5215555555555", items, "Monterrey");
+    expect(link).toMatch(/^https:\/\/wa\.me\/5215555555555\?text=/);
+    expect(decodeURIComponent(link)).toContain("Monterrey");
+    expect(decodeURIComponent(link)).toContain("Extractor de aire");
+  });
+});
+
+describe("construirMensajeCoberturaRenta", () => {
+  it("pregunta por cobertura de renta en una ciudad", () => {
+    const mensaje = construirMensajeCoberturaRenta("Puebla");
+    expect(mensaje).toContain("Puebla");
+    expect(mensaje).toContain("cobertura");
+  });
+});
+
+describe("construirLinkCoberturaRenta", () => {
+  it("arma un link wa.me con la ciudad codificada", () => {
+    const link = construirLinkCoberturaRenta("5215555555555", "Puebla");
+    expect(link).toMatch(/^https:\/\/wa\.me\/5215555555555\?text=/);
+    expect(decodeURIComponent(link)).toContain("Puebla");
   });
 });
 

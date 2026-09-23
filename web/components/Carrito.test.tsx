@@ -30,6 +30,32 @@ function renderCarritoConProducto() {
   );
 }
 
+function IniciadorVenta() {
+  const { agregarProducto } = useCarrito();
+  useEffect(() => {
+    agregarProducto({
+      productoId: "extractor-aire",
+      varianteId: "ay-1220",
+      nombreProducto: "Extractor de aire",
+      nombreVariante: "AY-1220",
+      tipo: "venta",
+      precioUnitario: 17914,
+      cantidad: 1,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
+function renderCarritoConProductoVenta() {
+  return render(
+    <CarritoProvider>
+      <IniciadorVenta />
+      <Carrito />
+    </CarritoProvider>
+  );
+}
+
 describe("Carrito", () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -92,11 +118,44 @@ describe("Carrito", () => {
       ok: false,
       json: async () => ({ error: "MP_ACCESS_TOKEN no configurado." }),
     });
-    renderCarritoConProducto();
+    renderCarritoConProductoVenta();
     fireEvent.click(screen.getByText("Pagar en línea"));
     await waitFor(() =>
       expect(screen.getByText("MP_ACCESS_TOKEN no configurado.")).toBeInTheDocument()
     );
+  });
+
+  it("muestra 'Pagar en línea' y no pide ciudad cuando el carrito es solo de venta", () => {
+    renderCarritoConProductoVenta();
+    expect(screen.getByText("Pagar en línea")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Tu ciudad")).not.toBeInTheDocument();
+  });
+
+  it("no muestra 'Pagar en línea' y pide elegir ciudad cuando el carrito tiene un item de renta", () => {
+    renderCarritoConProducto();
+    expect(screen.queryByText("Pagar en línea")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Tu ciudad")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Selecciona tu ciudad" })).toBeDisabled();
+  });
+
+  it("muestra 'Confirmar disponibilidad' con link de WhatsApp a la ciudad si tiene sucursal", () => {
+    renderCarritoConProducto();
+    fireEvent.change(screen.getByLabelText("Tu ciudad"), { target: { value: "Guadalajara" } });
+    const boton = screen.getByText("Confirmar disponibilidad");
+    expect(boton).toHaveAttribute("href", expect.stringContaining("https://wa.me/"));
+    expect(decodeURIComponent(boton.getAttribute("href")!)).toContain("Guadalajara");
+    expect(screen.queryByText("Pagar en línea")).not.toBeInTheDocument();
+  });
+
+  it("muestra advertencia y 'Preguntar por WhatsApp' si la ciudad no tiene sucursal SkyCool", () => {
+    renderCarritoConProducto();
+    fireEvent.change(screen.getByLabelText("Tu ciudad"), { target: { value: "Otra ciudad" } });
+    expect(
+      screen.getByText(/no tenemos servicio de renta en tu ciudad/i)
+    ).toBeInTheDocument();
+    const boton = screen.getByText("Preguntar por WhatsApp");
+    expect(boton).toHaveAttribute("href", expect.stringContaining("https://wa.me/"));
+    expect(decodeURIComponent(boton.getAttribute("href")!)).toContain("Otra ciudad");
   });
 
   it("no navega al hacer clic en el link de WhatsApp cuando el carrito está vacío", () => {
