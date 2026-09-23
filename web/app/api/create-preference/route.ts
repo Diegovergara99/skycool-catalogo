@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import type { DiasRenta, ItemCarrito, TipoOperacion } from "@/lib/carrito-reducer";
-import { calcularImporteUnitario } from "@/lib/carrito-reducer";
+import { calcularImporteUnitario, calcularImporteItem } from "@/lib/carrito-reducer";
 import { resolverPrecioOficial } from "@/lib/productos";
+import { esDireccionValida, formatearDireccionUnaLinea, type DireccionEnvio } from "@/lib/direccion-envio";
+import { formatMoneda } from "@/lib/formatMoneda";
+
+const CORREO_DESTINO = "skycool.gdl@gmail.com";
+const REMITENTE = "SkyCool Web <onboarding@resend.dev>";
 
 function esTipoValido(tipo: unknown): tipo is TipoOperacion {
   return tipo === "renta" || tipo === "venta";
@@ -10,6 +15,59 @@ function esTipoValido(tipo: unknown): tipo is TipoOperacion {
 
 function esDiasValido(dias: unknown): dias is DiasRenta | undefined {
   return dias === undefined || dias === 1 || dias === 3;
+}
+
+/**
+ * Aviso al negocio de que hay un pedido de venta en curso, con la
+ * dirección de envío capturada — no hay webhook de Mercado Pago
+ * configurado todavía, así que este correo es la única forma de que
+ * SkyCool se entere del pedido sin tener que revisar el panel de MP a
+ * cada rato. Si el correo falla, no debe tumbar el flujo de pago: el
+ * cliente ya tiene su link de Mercado Pago, que es lo importante.
+ */
+async function enviarAvisoDePedido(items: ItemCarrito[], direccion: DireccionEnvio) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error("create-preference: RESEND_API_KEY no configurado, no se envió el aviso de pedido.");
+    return;
+  }
+
+  const lineas = items.map(
+    (item) =>
+      `• ${item.nombreProducto} (${item.nombreVariante}) x${item.cantidad} — ${formatMoneda(
+        calcularImporteItem(item)
+      )}`
+  );
+  const total = items.reduce((acc, item) => acc + calcularImporteItem(item), 0);
+
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: REMITENTE,
+        to: [CORREO_DESTINO],
+        subject: `Nuevo pedido de venta — ${direccion.nombre}`,
+        text: [
+          "Nuevo pedido de venta desde la web:",
+          "",
+          ...lineas,
+          "",
+          `Total: ${formatMoneda(total)} + IVA`,
+          "",
+          `Cliente: ${direccion.nombre}`,
+          `Teléfono: ${direccion.telefono}`,
+          `Dirección de envío: ${formatearDireccionUnaLinea(direccion)}`,
+          ...(direccion.referencias ? [`Referencias: ${direccion.referencias}`] : []),
+        ].join("\n"),
+      }),
+    });
+  } catch (err) {
+    console.error("create-preference: no se pudo enviar el aviso de pedido por correo.", err);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -27,9 +85,11 @@ export async function POST(request: NextRequest) {
   }
 
   let items: ItemCarrito[] | undefined;
+  let direccion: unknown;
   try {
-    const body = (await request.json()) as { items?: ItemCarrito[] };
+    const body = (await request.json()) as { items?: ItemCarrito[]; direccion?: unknown };
     items = body.items;
+    direccion = body.direccion;
   } catch {
     return NextResponse.json(
       { error: "El cuerpo de la solicitud no es un JSON válido." },
@@ -39,6 +99,19 @@ export async function POST(request: NextRequest) {
 
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "El carrito está vacío." }, { status: 400 });
+  }
+
+  // La renta se cotiza y confirma por WhatsApp (ver evaluarDisponibilidadRenta
+  // en el carrito), así que a esta ruta solo llegan carritos de venta desde
+  // la UI actual — pero validamos aquí también, y no solo en el cliente,
+  // porque enviamos productos a cualquier parte de la República y sin
+  // dirección no hay forma de cumplir el pedido.
+  const hayVenta = items.some((item) => item.tipo === "venta");
+  if (hayVenta && !esDireccionValida(direccion)) {
+    return NextResponse.json(
+      { error: "La dirección de envío es obligatoria para productos de venta." },
+      { status: 400 }
+    );
   }
 
   // Nunca confiar en precioUnitario/cantidad/dias tal cual llegan del
@@ -84,6 +157,8 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  const direccionValida = hayVenta && esDireccionValida(direccion) ? direccion : null;
+
   try {
     const client = new MercadoPagoConfig({ accessToken });
     const preference = new Preference(client);
@@ -98,8 +173,33 @@ export async function POST(request: NextRequest) {
           failure: `${origin}/pago/error`,
         },
         auto_return: "approved",
+        ...(direccionValida && {
+          payer: {
+            name: direccionValida.nombre,
+            phone: { number: direccionValida.telefono },
+          },
+          shipments: {
+            receiver_address: {
+              zip_code: direccionValida.codigoPostal,
+              street_name: direccionValida.calle,
+              street_number: direccionValida.numeroExterior,
+              apartment: direccionValida.numeroInterior,
+              city_name: direccionValida.ciudad,
+              state_name: direccionValida.estado,
+              country_name: "México",
+            },
+          },
+          metadata: {
+            colonia: direccionValida.colonia,
+            referencias: direccionValida.referencias ?? "",
+          },
+        }),
       },
     });
+
+    if (direccionValida) {
+      await enviarAvisoDePedido(items, direccionValida);
+    }
 
     return NextResponse.json({ initPoint: resultado.init_point });
   } catch {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ItemCarrito } from "./carrito-reducer";
+import type { DireccionEnvio } from "./direccion-envio";
 
 interface EstadoCheckout {
   cargando: boolean;
@@ -15,14 +16,14 @@ function redirigirPorDefecto(url: string) {
 export function useCheckoutMercadoPago(redirigir: (url: string) => void = redirigirPorDefecto) {
   const [estado, setEstado] = useState<EstadoCheckout>({ cargando: false, error: null });
 
-  async function pagar(items: ItemCarrito[]) {
+  async function pagar(items: ItemCarrito[], direccion?: DireccionEnvio) {
     if (estado.cargando) return;
     setEstado({ cargando: true, error: null });
     try {
       const respuesta = await fetch("/api/create-preference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items, direccion }),
       });
 
       if (!respuesta.ok) {

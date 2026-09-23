@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useCheckoutMercadoPago } from "./useCheckoutMercadoPago";
 import type { ItemCarrito } from "./carrito-reducer";
+import type { DireccionEnvio } from "./direccion-envio";
 
 const items: ItemCarrito[] = [
   {
@@ -35,6 +36,35 @@ describe("useCheckoutMercadoPago", () => {
     expect(redirigir).toHaveBeenCalledWith("https://mp.example/checkout/abc");
     expect(result.current.error).toBeNull();
     expect(result.current.cargando).toBe(false);
+  });
+
+  it("envía la dirección de envío en el cuerpo de la solicitud cuando se proporciona", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => ({ initPoint: "https://mp.example/checkout/abc" }),
+    });
+    const direccion: DireccionEnvio = {
+      nombre: "Juan Pérez",
+      telefono: "3312345678",
+      calle: "Av. Vallarta",
+      numeroExterior: "1234",
+      colonia: "Americana",
+      ciudad: "Guadalajara",
+      estado: "Jalisco",
+      codigoPostal: "44160",
+    };
+    const { result } = renderHook(() => useCheckoutMercadoPago(vi.fn()));
+
+    await act(async () => {
+      await result.current.pagar(items, direccion);
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/create-preference",
+      expect.objectContaining({
+        body: JSON.stringify({ items, direccion }),
+      })
+    );
   });
 
   it("guarda el mensaje de error cuando el servidor responde con error", async () => {

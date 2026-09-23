@@ -24,6 +24,19 @@ const itemDePrueba = {
   cantidad: 1,
 };
 
+const direccionDePrueba = {
+  nombre: "Juan Pérez",
+  telefono: "3312345678",
+  calle: "Av. Vallarta",
+  numeroExterior: "1234",
+  numeroInterior: "5B",
+  colonia: "Americana",
+  ciudad: "Guadalajara",
+  estado: "Jalisco",
+  codigoPostal: "44160",
+  referencias: "Portón negro",
+};
+
 function construirRequest(body: unknown) {
   return new NextRequest("http://localhost:3000/api/create-preference", {
     method: "POST",
@@ -61,7 +74,9 @@ describe("POST /api/create-preference", () => {
     process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
     mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
     const { POST } = await import("./route");
-    const res = await POST(construirRequest({ items: [itemDePrueba] }));
+    const res = await POST(
+      construirRequest({ items: [itemDePrueba], direccion: direccionDePrueba })
+    );
     const datos = await res.json();
     expect(res.status).toBe(200);
     expect(datos.initPoint).toBe("https://mp.example/checkout/123");
@@ -71,7 +86,9 @@ describe("POST /api/create-preference", () => {
     process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
     mockCreate.mockRejectedValue(new Error("mp down"));
     const { POST } = await import("./route");
-    const res = await POST(construirRequest({ items: [itemDePrueba] }));
+    const res = await POST(
+      construirRequest({ items: [itemDePrueba], direccion: direccionDePrueba })
+    );
     expect(res.status).toBe(502);
   });
 
@@ -86,7 +103,9 @@ describe("POST /api/create-preference", () => {
       precioUnitario: 1, // precio real de catálogo (venta) es 17914
     };
 
-    const res = await POST(construirRequest({ items: [itemManipulado] }));
+    const res = await POST(
+      construirRequest({ items: [itemManipulado], direccion: direccionDePrueba })
+    );
     expect(res.status).toBe(200);
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -99,6 +118,125 @@ describe("POST /api/create-preference", () => {
     );
   });
 
+  it("devuelve 400 si hay un item de venta y no se manda dirección de envío", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    const { POST } = await import("./route");
+
+    const res = await POST(construirRequest({ items: [itemDePrueba] }));
+    expect(res.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it.each(["nombre", "calle", "numeroExterior", "colonia", "ciudad", "estado", "codigoPostal", "telefono"])(
+    "devuelve 400 si la dirección de envío no trae '%s'",
+    async (campo) => {
+      process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+      const { POST } = await import("./route");
+
+      const direccionIncompleta = { ...direccionDePrueba, [campo]: "" };
+      const res = await POST(
+        construirRequest({ items: [itemDePrueba], direccion: direccionIncompleta })
+      );
+      expect(res.status).toBe(400);
+      expect(mockCreate).not.toHaveBeenCalled();
+    }
+  );
+
+  it("no requiere dirección de envío si el carrito es solo de renta", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const { POST } = await import("./route");
+
+    const itemRenta = { ...itemDePrueba, tipo: "renta", productoId: "ventilador-piso", varianteId: "dm-110" };
+    const res = await POST(construirRequest({ items: [itemRenta] }));
+    expect(res.status).toBe(200);
+  });
+
+  it("incluye payer, shipments y metadata con los datos de envío en la preferencia de Mercado Pago", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const { POST } = await import("./route");
+
+    const res = await POST(
+      construirRequest({ items: [itemDePrueba], direccion: direccionDePrueba })
+    );
+    expect(res.status).toBe(200);
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          payer: expect.objectContaining({
+            name: "Juan Pérez",
+            phone: { number: "3312345678" },
+          }),
+          shipments: expect.objectContaining({
+            receiver_address: expect.objectContaining({
+              zip_code: "44160",
+              street_name: "Av. Vallarta",
+              street_number: "1234",
+              apartment: "5B",
+              city_name: "Guadalajara",
+              state_name: "Jalisco",
+            }),
+          }),
+          metadata: expect.objectContaining({
+            colonia: "Americana",
+            referencias: "Portón negro",
+          }),
+        }),
+      })
+    );
+  });
+
+  it("envía un aviso por correo con la dirección de envío cuando hay venta y RESEND_API_KEY está configurado", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    process.env.RESEND_API_KEY = "re_test";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify({ id: "abc" }), { status: 200 }));
+    const { POST } = await import("./route");
+
+    const res = await POST(
+      construirRequest({ items: [itemDePrueba], direccion: direccionDePrueba })
+    );
+    expect(res.status).toBe(200);
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://api.resend.com/emails",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({ Authorization: "Bearer re_test" }),
+      })
+    );
+    const [, opciones] = fetchSpy.mock.calls[0];
+    const cuerpoEnviado = JSON.parse(String((opciones as RequestInit).body));
+    expect(cuerpoEnviado.to).toEqual(["skycool.gdl@gmail.com"]);
+    expect(cuerpoEnviado.text).toContain("Extractor de aire");
+    expect(cuerpoEnviado.text).toContain("Guadalajara");
+    expect(cuerpoEnviado.text).toContain("Juan Pérez");
+
+    delete process.env.RESEND_API_KEY;
+    fetchSpy.mockRestore();
+  });
+
+  it("no falla el pago si el envío del correo de aviso falla", async () => {
+    process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
+    process.env.RESEND_API_KEY = "re_test";
+    mockCreate.mockResolvedValue({ init_point: "https://mp.example/checkout/123" });
+    const fetchSpy = vi.spyOn(global, "fetch").mockRejectedValue(new Error("resend down"));
+    const { POST } = await import("./route");
+
+    const res = await POST(
+      construirRequest({ items: [itemDePrueba], direccion: direccionDePrueba })
+    );
+    const datos = await res.json();
+    expect(res.status).toBe(200);
+    expect(datos.initPoint).toBe("https://mp.example/checkout/123");
+
+    delete process.env.RESEND_API_KEY;
+    fetchSpy.mockRestore();
+  });
+
   it("devuelve 400 si productoId/varianteId no existen en el catálogo", async () => {
     process.env.MP_ACCESS_TOKEN = "TEST-TOKEN";
     const { POST } = await import("./route");
@@ -109,7 +247,9 @@ describe("POST /api/create-preference", () => {
       varianteId: "variante-inventada",
     };
 
-    const res = await POST(construirRequest({ items: [itemInventado] }));
+    const res = await POST(
+      construirRequest({ items: [itemInventado], direccion: direccionDePrueba })
+    );
     expect(res.status).toBe(400);
     expect(mockCreate).not.toHaveBeenCalled();
   });
@@ -120,7 +260,9 @@ describe("POST /api/create-preference", () => {
 
     const itemInvalido = { ...itemDePrueba, cantidad: cantidadInvalida };
 
-    const res = await POST(construirRequest({ items: [itemInvalido] }));
+    const res = await POST(
+      construirRequest({ items: [itemInvalido], direccion: direccionDePrueba })
+    );
     expect(res.status).toBe(400);
     expect(mockCreate).not.toHaveBeenCalled();
   });
@@ -183,7 +325,9 @@ describe("POST /api/create-preference", () => {
 
     const itemVentaConDias = { ...itemDePrueba, tipo: "venta", dias: 3 };
 
-    const res = await POST(construirRequest({ items: [itemVentaConDias] }));
+    const res = await POST(
+      construirRequest({ items: [itemVentaConDias], direccion: direccionDePrueba })
+    );
     expect(res.status).toBe(200);
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({

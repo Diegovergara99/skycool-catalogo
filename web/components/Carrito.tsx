@@ -14,6 +14,7 @@ import { sucursales } from "@/lib/sucursales";
 import { formatMoneda } from "@/lib/formatMoneda";
 import { useDialogoAccesible } from "@/lib/useDialogoAccesible";
 import Cotizacion from "./Cotizacion";
+import DireccionEnvio from "./DireccionEnvio";
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "[TU WHATSAPP]";
 
@@ -24,18 +25,19 @@ export default function Carrito() {
   const cerrarBotonRef = useRef<HTMLButtonElement>(null);
   const dialogoRef = useRef<HTMLDivElement>(null);
   const [cotizacionAbierta, setCotizacionAbierta] = useState(false);
+  const [direccionAbierta, setDireccionAbierta] = useState(false);
   const [ciudad, setCiudad] = useState("");
 
-  useDialogoAccesible(dialogoRef, abierto && !cotizacionAbierta);
+  useDialogoAccesible(dialogoRef, abierto && !cotizacionAbierta && !direccionAbierta);
 
   useEffect(() => {
     if (!abierto) return;
     function alPresionarTecla(e: KeyboardEvent) {
-      if (e.key === "Escape" && !cotizacionAbierta) cerrarCarrito();
+      if (e.key === "Escape" && !cotizacionAbierta && !direccionAbierta) cerrarCarrito();
     }
     window.addEventListener("keydown", alPresionarTecla);
     return () => window.removeEventListener("keydown", alPresionarTecla);
-  }, [abierto, cerrarCarrito, cotizacionAbierta]);
+  }, [abierto, cerrarCarrito, cotizacionAbierta, direccionAbierta]);
 
   useEffect(() => {
     if (abierto) cerrarBotonRef.current?.focus();
@@ -134,7 +136,7 @@ export default function Carrito() {
             Subtotal: {formatMoneda(subtotal)} <span className="text-sm font-normal text-slate-400">+ IVA</span>
           </p>
 
-          {error && (
+          {error && !direccionAbierta && (
             <p className="mt-3 rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>
           )}
 
@@ -199,11 +201,11 @@ export default function Carrito() {
             {estadoRenta === "sin_renta" && (
               <button
                 type="button"
-                disabled={carritoVacio || cargando}
-                onClick={() => pagar(items)}
+                disabled={carritoVacio}
+                onClick={() => setDireccionAbierta(true)}
                 className="rounded-md bg-[var(--color-teal)] py-2 text-sm font-semibold text-[var(--color-navy)] transition hover:bg-[var(--color-teal-dark)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
               >
-                {cargando ? "Conectando…" : "Pagar en línea"}
+                Pagar en línea
               </button>
             )}
 
@@ -245,6 +247,15 @@ export default function Carrito() {
 
     {cotizacionAbierta && (
       <Cotizacion items={items} onCerrar={() => setCotizacionAbierta(false)} />
+    )}
+
+    {direccionAbierta && (
+      <DireccionEnvio
+        onConfirmar={(direccion) => pagar(items, direccion)}
+        onCerrar={() => setDireccionAbierta(false)}
+        cargando={cargando}
+        error={error}
+      />
     )}
     </>
   );

@@ -113,6 +113,27 @@ describe("Carrito", () => {
     expect(screen.getByText(/carrito está vacío/i)).toBeInTheDocument();
   });
 
+  function llenarDireccionEnvio() {
+    fireEvent.change(screen.getByLabelText("Nombre completo"), {
+      target: { value: "Juan Pérez" },
+    });
+    fireEvent.change(screen.getByLabelText("Teléfono de contacto"), {
+      target: { value: "3312345678" },
+    });
+    fireEvent.change(screen.getByLabelText("Calle"), { target: { value: "Av. Vallarta" } });
+    fireEvent.change(screen.getByLabelText("No. exterior"), { target: { value: "1234" } });
+    fireEvent.change(screen.getByLabelText("Colonia"), { target: { value: "Americana" } });
+    fireEvent.change(screen.getByLabelText("Ciudad"), { target: { value: "Guadalajara" } });
+    fireEvent.change(screen.getByLabelText("Estado"), { target: { value: "Jalisco" } });
+    fireEvent.change(screen.getByLabelText("Código postal"), { target: { value: "44160" } });
+  }
+
+  it("abre el formulario de dirección de envío al hacer clic en 'Pagar en línea'", () => {
+    renderCarritoConProductoVenta();
+    fireEvent.click(screen.getByText("Pagar en línea"));
+    expect(screen.getByText("¿A dónde enviamos tu pedido?")).toBeInTheDocument();
+  });
+
   it("muestra un error si Mercado Pago falla", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: false,
@@ -120,9 +141,31 @@ describe("Carrito", () => {
     });
     renderCarritoConProductoVenta();
     fireEvent.click(screen.getByText("Pagar en línea"));
+    llenarDireccionEnvio();
+    fireEvent.click(screen.getByText("Continuar al pago"));
     await waitFor(() =>
       expect(screen.getByText("MP_ACCESS_TOKEN no configurado.")).toBeInTheDocument()
     );
+  });
+
+  it("envía la dirección capturada al confirmar el formulario de envío", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => ({ initPoint: "https://mp.example/checkout/abc" }),
+    });
+    renderCarritoConProductoVenta();
+    fireEvent.click(screen.getByText("Pagar en línea"));
+    llenarDireccionEnvio();
+    fireEvent.click(screen.getByText("Continuar al pago"));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    const [, opciones] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+    const cuerpo = JSON.parse((opciones as RequestInit).body as string);
+    expect(cuerpo.direccion).toMatchObject({
+      nombre: "Juan Pérez",
+      calle: "Av. Vallarta",
+      ciudad: "Guadalajara",
+    });
   });
 
   it("muestra 'Pagar en línea' y no pide ciudad cuando el carrito es solo de venta", () => {
