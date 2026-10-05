@@ -48,6 +48,12 @@ export const sucursales: Sucursal[] = [
     estado: "Guanajuato",
     direccion: "San Juan Crisóstomo 1312, 37490 Plan de Ayala, Gto.",
   },
+  {
+    id: "torreon",
+    ciudad: "Torreón",
+    estado: "Coahuila",
+    direccion: "Blvrd. Revolución 1199-Oriente, Tercero de Cobián Centro, 27000 Torreón, Coah.",
+  },
 ];
 
 /**

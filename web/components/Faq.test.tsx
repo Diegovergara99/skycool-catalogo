@@ -20,7 +20,7 @@ describe("Faq", () => {
     expect(screen.getByText("¿Cuánto tarda la entrega?")).toBeInTheDocument();
   });
 
-  it("la respuesta de cobertura usa la lista dinámica de ciudades (7 sucursales reales)", () => {
+  it("la respuesta de cobertura usa la lista dinámica de ciudades (8 sucursales reales)", () => {
     render(<Faq />);
     expect(screen.getByText(/Guadalajara, Tonalá, Ciudad de México/)).toBeInTheDocument();
   });

@@ -11,7 +11,7 @@ describe("Nosotros", () => {
   it("muestra los datos de confianza: años de experiencia, sucursales y garantía", () => {
     render(<Nosotros />);
     expect(screen.getByText("3 años")).toBeInTheDocument();
-    expect(screen.getByText("7 sucursales")).toBeInTheDocument();
+    expect(screen.getByText("8 sucursales")).toBeInTheDocument();
     expect(screen.getByText("Garantía")).toBeInTheDocument();
   });
 });
