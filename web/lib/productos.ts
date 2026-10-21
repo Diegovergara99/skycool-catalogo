@@ -11,7 +11,8 @@ export const productos: Producto[] = [
     nombre: "Extractor de aire",
     categoria: "extraccion",
     imagen: "/imagenes/extractor-aire.jpg",
-    descripcion: "Para interiores y exteriores. Modelo AY-1220.",
+    descripcion:
+      "Saca el aire caliente o viciado hacia afuera — ideal para talleres, bodegas cerradas y cocinas industriales. Modelo AY-1220, solo venta.",
     specs: [
       { label: "Diámetro de cuchillas", valor: "1100 mm" },
       { label: "Flujo de aire", valor: "38,000 m³/h" },
@@ -32,7 +33,7 @@ export const productos: Producto[] = [
     categoria: "piso",
     imagen: "/imagenes/ventilador-piso.jpg",
     descripcion:
-      "Suministro de aire de largo alcance. Ideal para talleres, gimnasios y eventos al aire libre.",
+      "El más versátil del catálogo: alcance de hasta 40 m y cobertura de 400-500 m². Perfecto para eventos, talleres y gimnasios — renta o venta.",
     specs: [
       { label: "Diámetro", valor: "1.25 m (48 pulgadas)" },
       { label: "Flujo de aire a plena carga", valor: "38,000 m³/h" },
@@ -71,7 +72,8 @@ export const productos: Producto[] = [
     nombre: "Ventilador giratorio",
     categoria: "giratorio",
     imagen: "/imagenes/ventilador-giratorio.jpg",
-    descripcion: "Giratorio, 1 metro de diámetro. Modelo AY-920B.",
+    descripcion:
+      "Compacto y portátil (29 kg), oscila para cubrir más área. Ideal para espacios chicos o enfriamiento puntual — renta o venta.",
     specs: [
       { label: "Diámetro", valor: "1 m (39 pulgadas)" },
       { label: "Flujo de aire a plena carga", valor: "2,000 m³/h" },
@@ -91,7 +93,8 @@ export const productos: Producto[] = [
     nombre: "Enfriador evaporativo",
     categoria: "evaporativo",
     imagen: "/imagenes/enfriador-evaporativo.jpg",
-    descripcion: "Para interiores y exteriores. Modelo AY-D18.",
+    descripcion:
+      "El único equipo que baja la temperatura real del ambiente con agua, no solo mueve aire. Cubre 150 m² — renta o venta.",
     specs: [
       { label: "Alimentación", valor: "110V/60Hz" },
       { label: "Corriente", valor: "7.1 A" },
@@ -110,7 +113,8 @@ export const productos: Producto[] = [
     nombre: "Ventilador de techo industrial",
     categoria: "techo",
     imagen: "/imagenes/ventilador-techo.jpg",
-    descripcion: "Serie W.FANS, motor síncrono de imán permanente PMSM.",
+    descripcion:
+      "Ventilación permanente para naves y bodegas grandes, en tres tamaños (4.2 a 8 m). Bajo consumo y ruido ≤38 dB — solo venta.",
     specs: [
       { label: "Ruido", valor: "≤38 dB" },
       { label: "Alimentación", valor: "380V/220V" },

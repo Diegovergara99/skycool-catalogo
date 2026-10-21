@@ -15,7 +15,7 @@ describe("ExtractorDeAirePage", () => {
   it("muestra el título y explica que es solo venta", () => {
     renderPagina();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/extractor de aire/i);
-    expect(screen.getByText(/solo venta/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/solo venta/i).length).toBeGreaterThan(0);
   });
 
   it("incluye el widget de compra con el precio real", () => {
