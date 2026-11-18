@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Nosotros from "@/components/Nosotros";
 import ComoFunciona from "@/components/ComoFunciona";
 import Instalaciones from "@/components/Instalaciones";
+import CasosExito from "@/components/CasosExito";
 import Catalogo from "@/components/Catalogo";
 import Sucursales from "@/components/Sucursales";
 import Faq from "@/components/Faq";
@@ -23,6 +24,9 @@ export default function Home() {
       </RevealSection>
       <RevealSection>
         <Instalaciones />
+      </RevealSection>
+      <RevealSection>
+        <CasosExito />
       </RevealSection>
       <RevealSection>
         <Sucursales />
