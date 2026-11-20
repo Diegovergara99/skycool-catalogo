@@ -29,6 +29,14 @@ describe("Contacto", () => {
     expect(screen.queryByText(/facebook/i)).not.toBeInTheDocument();
   });
 
+  it("muestra un botón para dejar reseña en Google con el link real", () => {
+    render(<Contacto />);
+    const link = screen.getByRole("link", { name: /déjanos tu opinión en google/i });
+    expect(link).toHaveAttribute("href", "https://g.page/r/CTe1usxiVCBGEBM");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noreferrer");
+  });
+
   it("abre WhatsApp con los datos del formulario al enviarlo", () => {
     const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
     render(<Contacto />);
