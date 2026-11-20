@@ -26,7 +26,7 @@ const barlow = Barlow_Condensed({
 // completa de ciudades sigue disponible en el Hero, Nosotros y Sucursales;
 // aquí solo se usa el conteo (dinámico, no un número fijo) para no repetir
 // el bug ya corregido antes de una lista de ciudades desactualizada.
-const TITULO = "SkyCool — Venta y renta de ventilación industrial";
+const TITULO = "Renta de ventiladores industriales en Guadalajara | SkyCool";
 const DESCRIPCION = `Renta y venta de ventiladores industriales, extractores y enfriadores evaporativos, con entrega e instalación en ${sucursales.length} ciudades de México.`;
 
 export const metadata: Metadata = {

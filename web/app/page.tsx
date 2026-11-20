@@ -3,6 +3,8 @@ import Nosotros from "@/components/Nosotros";
 import ComoFunciona from "@/components/ComoFunciona";
 import Instalaciones from "@/components/Instalaciones";
 import CasosExito from "@/components/CasosExito";
+import Testimonios from "@/components/Testimonios";
+import RentaGuadalajara from "@/components/RentaGuadalajara";
 import Catalogo from "@/components/Catalogo";
 import Sucursales from "@/components/Sucursales";
 import Faq from "@/components/Faq";
@@ -17,6 +19,9 @@ export default function Home() {
         <Catalogo />
       </RevealSection>
       <RevealSection>
+        <RentaGuadalajara />
+      </RevealSection>
+      <RevealSection>
         <Nosotros />
       </RevealSection>
       <RevealSection>
@@ -27,6 +32,9 @@ export default function Home() {
       </RevealSection>
       <RevealSection>
         <CasosExito />
+      </RevealSection>
+      <RevealSection>
+        <Testimonios />
       </RevealSection>
       <RevealSection>
         <Sucursales />

@@ -29,6 +29,11 @@ export default function Hero() {
           </h1>
 
           <p className="mt-5 max-w-md text-slate-300">
+            Renta de ventiladores industriales en Guadalajara para bodas, eventos, bodegas, naves
+            y talleres. Entrega, instalación y recolección incluidas, desde $950 + IVA.
+          </p>
+
+          <p className="mt-3 max-w-md text-slate-300">
             Ventiladores de piso, giratorios, de techo, extractores de aire y enfriadores
             evaporativos. Presencia en Guadalajara, CDMX, Monterrey, León y Culiacán.
           </p>
